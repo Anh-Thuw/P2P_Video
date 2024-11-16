@@ -29,7 +29,6 @@ public class ClientInterface extends JFrame {
     public ClientInterface(String IP_Server, int port, String name) throws ClassNotFoundException {
 
         SwingUtilities.invokeLater(() -> {
-
             setSize(1200, 700);
             setTitle("Client Video Room");
             setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
