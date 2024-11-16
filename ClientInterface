@@ -1,0 +1,328 @@
+[33mcommit da3ea68dc8e7a9260f95bf435cb6a5914625bee3[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Author: trường nguyễn xuân <91445722+xuantruong1106@users.noreply.github.com>
+Date:   Thu Dec 21 21:48:23 2023 +0700
+
+    test
+
+[1mdiff --git a/src/test/java/ClientInterface.java b/src/test/java/ClientInterface.java[m
+[1mindex a2c855e..00ab7e1 100644[m
+[1m--- a/src/test/java/ClientInterface.java[m
+[1m+++ b/src/test/java/ClientInterface.java[m
+[36m@@ -24,7 +24,7 @@[m [mpublic class ClientInterface extends JFrame {[m
+     private ObjectOutputStream out;[m
+     private Socket socket;[m
+     private WebcamPanel camPanel;[m
+[31m-    private boolean sendData = true;[m
+[32m+[m[32m//    private boolean sendData = true;[m[41m[m
+ [m
+     public ClientInterface(String IP_Server, int port, String name) throws ClassNotFoundException {[m
+ [m
+[36m@@ -81,7 +81,7 @@[m [mpublic class ClientInterface extends JFrame {[m
+                             isMicOn = true;[m
+                         }).start();[m
+ [m
+[31m-                        while (sendData) {[m
+[32m+[m[32m                        while (true) {[m[41m[m
+                             br = webcam.getImage();[m
+                             icOut = new ImageIcon(br);[m
+                             out.writeObject(icOut);[m
+[36m@@ -102,24 +102,16 @@[m [mpublic class ClientInterface extends JFrame {[m
+                         in = new ObjectInputStream(socket.getInputStream());[m
+ [m
+                         while (true) {[m
+[31m-                            ImageIcon icIn = (ImageIcon) in.readObject();[m
+[31m-                            if (icIn == null) {[m
+[31m-                                // Camera may be off[m
+[31m-                                video.setIcon(null);[m
+[31m-                                System.out.println("Camera is off");[m
+[31m-                            } else {[m
+[31m-                                video.setIcon(icIn);[m
+[31m-                                System.out.println("inFromHost");[m
+[31m-                            }[m
+[32m+[m[32m                            ImageIcon ic = (ImageIcon) in.readObject();[m[41m[m
+[32m+[m[32m                            video.setIcon(ic);[m[41m[m
+[32m+[m[32m                            System.out.println("inFromHost");[m[41m[m
+                         }[m
+                     } catch (IOException | ClassNotFoundException ex) {[m
+                         Logger.getLogger(HostInterface.class.getName()).log(Level.SEVERE, null, ex);[m
+[31m-                        MainInterface main = new MainInterface();[m
+[31m-                        main.setVisible(true);[m
+[31m-                        setVisible(false);[m
+[31m-                        dispose();[m
+[32m+[m[32m                        video.setIcon(null);[m[41m[m
+                     }[m
+[31m-                }).start();[m
+[32m+[m[32m                }).start();[m[41m [m
+[32m+[m[41m                [m
+             } catch (IOException ex) {[m
+                 Logger.getLogger(HostInterface.class.getName()).log(Level.SEVERE, null, ex);[m
+                 MainInterface main = new MainInterface();[m
+[36m@@ -168,7 +160,7 @@[m [mpublic class ClientInterface extends JFrame {[m
+         if (webcam != null && !webcam.isOpen()) {[m
+             webcam.open();[m
+             camPanel.start();[m
+[31m-            sendData = true;[m
+[32m+[m[32m//            sendData = true;[m[41m[m
+         }[m
+     }[m
+ [m
+[36m@@ -176,7 +168,7 @@[m [mpublic class ClientInterface extends JFrame {[m
+         if (webcam != null && webcam.isOpen()) {[m
+             webcam.close();[m
+             camPanel.stop();[m
+[31m-            sendData = false;[m
+[32m+[m[32m//            sendData = false;[m[41m[m
+         }[m
+     }[m
+ [m
+[1mdiff --git a/src/test/java/HostInterface.java b/src/test/java/HostInterface.java[m
+[1mindex d313d91..2ea8d1e 100644[m
+[1m--- a/src/test/java/HostInterface.java[m
+[1m+++ b/src/test/java/HostInterface.java[m
+[36m@@ -19,7 +19,7 @@[m [mpublic class HostInterface extends JFrame {[m
+     private boolean isCameraOn = true;[m
+     private boolean isMicOn = true;[m
+     private static JLabel video = new JLabel();[m
+[31m-    private static JLabel videoOut = new JLabel();[m
+[32m+[m[32m//    private static JLabel videoOut = new JLabel();[m[41m[m
+     private ImageIcon icOut;[m
+     private BufferedImage br;[m
+     private ObjectInputStream in;[m
+[36m@@ -27,7 +27,7 @@[m [mpublic class HostInterface extends JFrame {[m
+     private Socket clientSocket;[m
+     private ServerSocket serverSocket;[m
+     private WebcamPanel camPanel;[m
+[31m-    private boolean sendData = true;[m
+[32m+[m[32m//    private boolean sendData = true;[m[41m[m
+     [m
+     public HostInterface(int port, String name) throws ClassNotFoundException {[m
+         SwingUtilities.invokeLater(() -> {[m
+[36m@@ -94,21 +94,15 @@[m [mpublic class HostInterface extends JFrame {[m
+                         in = new ObjectInputStream(clientSocket.getInputStream());[m
+ [m
+                         while (true) {[m
+[31m-                            ImageIcon icIn = (ImageIcon) in.readObject();[m
+[31m-                            if (icIn == null) {[m
+[31m-                                // Camera may be off[m
+[31m-                                video.setIcon(null);[m
+[31m-                                System.out.println("Camera is off");[m
+[31m-                            } else {[m
+[31m-                                video.setIcon(icIn);[m
+[31m-                                System.out.println("inFromClient");[m
+[31m-                            }[m
+[32m+[m[32m                            ImageIcon ic = (ImageIcon) in.readObject();[m[41m[m
+[32m+[m[32m                            video.setIcon(ic);[m[41m[m
+[32m+[m[32m                            System.out.println("inFromClient");[m[41m[m
+                         }[m
+                     } catch (IOException | ClassNotFoundException ex) {[m
+                         Logger.getLogger(HostInterface.class.getName()).log(Level.SEVERE, null, ex);[m
+                         video.setIcon(null);[m
+                     }[m
+[31m-                }).start();[m
+[32m+[m[32m                }).start();[m[41m [m
+ [m
+                 new Thread(() -> {[m
+                     try {[m
+[36m@@ -120,7 +114,7 @@[m [mpublic class HostInterface extends JFrame {[m
+                             isMicOn = true;[m
+                         }).start();[m
+ [m
+[31m-                        while (sendData) {[m
+[32m+[m[32m                        while (true) {[m[41m[m
+ [m
+                             br = webcam.getImage();[m
+                             icOut = new ImageIcon(br);[m
+[36m@@ -179,7 +173,7 @@[m [mpublic class HostInterface extends JFrame {[m
+         if (webcam != null && !webcam.isOpen()) {[m
+             webcam.open();[m
+             camPanel.start();[m
+[31m-            sendData = true;[m
+[32m+[m[32m//            sendData = true;[m[41m[m
+         }[m
+     }[m
+ [m
+[36m@@ -187,7 +181,7 @@[m [mpublic class HostInterface extends JFrame {[m
+         if (webcam != null && webcam.isOpen()) {[m
+             webcam.close();[m
+             camPanel.stop();[m
+[31m-            sendData = false;[m
+[32m+[m[32m//            sendData = false;[m[41m[m
+         }[m
+     }[m
+ [m
+[36m@@ -199,7 +193,7 @@[m [mpublic class HostInterface extends JFrame {[m
+ [m
+     private void exitVideoRoom() {[m
+     try {[m
+[31m-        sendData = false; // Stop receiving data[m
+[32m+[m[32m//        sendData = false; // Stop receiving data[m[41m[m
+ [m
+         if (clientSocket != null) {[m
+             clientSocket.close();[m
+
+[33mcommit 1c4ae203fd1fcd1af05c2efee7ef2823ba13810f[m
+Author: trường nguyễn xuân <91445722+xuantruong1106@users.noreply.github.com>
+Date:   Thu Dec 21 18:03:46 2023 +0700
+
+    test
+
+[1mdiff --git a/src/test/java/ClientInterface.java b/src/test/java/ClientInterface.java[m
+[1mindex 1c606c9..a2c855e 100644[m
+[1m--- a/src/test/java/ClientInterface.java[m
+[1m+++ b/src/test/java/ClientInterface.java[m
+[36m@@ -75,12 +75,13 @@[m [mpublic class ClientInterface extends JFrame {[m
+                     try {[m
+                         out = new ObjectOutputStream(socket.getOutputStream());[m
+ [m
+[31m-                        webcam = Webcam.getDefault();[m
+[31m-                        webcam.open();[m
+[31m-                        isCameraOn = true;[m
+[31m-                        isMicOn = true;[m
+[32m+[m[32m                        new Thread(() -> {[m[41m[m
+[32m+[m[32m                            webcam.open();[m[41m[m
+[32m+[m[32m                            isCameraOn = true;[m[41m[m
+[32m+[m[32m                            isMicOn = true;[m[41m[m
+[32m+[m[32m                        }).start();[m[41m[m
+ [m
+[31m-                        while (true) {[m
+[32m+[m[32m                        while (sendData) {[m[41m[m
+                             br = webcam.getImage();[m
+                             icOut = new ImageIcon(br);[m
+                             out.writeObject(icOut);[m
+[36m@@ -100,7 +101,7 @@[m [mpublic class ClientInterface extends JFrame {[m
+                     try {[m
+                         in = new ObjectInputStream(socket.getInputStream());[m
+ [m
+[31m-                        while (sendData) {[m
+[32m+[m[32m                        while (true) {[m[41m[m
+                             ImageIcon icIn = (ImageIcon) in.readObject();[m
+                             if (icIn == null) {[m
+                                 // Camera may be off[m
+[1mdiff --git a/src/test/java/HostInterface.java b/src/test/java/HostInterface.java[m
+[1mindex 7fbf2ab..d313d91 100644[m
+[1m--- a/src/test/java/HostInterface.java[m
+[1m+++ b/src/test/java/HostInterface.java[m
+[36m@@ -133,6 +133,7 @@[m [mpublic class HostInterface extends JFrame {[m
+                         video.setIcon(null);[m
+                     }[m
+                 }).start();[m
+[32m+[m[41m                [m
+             } catch (IOException ex) {[m
+                 Logger.getLogger(HostInterface.class.getName()).log(Level.SEVERE, null, ex);[m
+                 video.setIcon(null);[m
+
+[33mcommit 7debb73b645de10994e6158d376e956e3357af96[m
+Author: trường nguyễn xuân <91445722+xuantruong1106@users.noreply.github.com>
+Date:   Thu Dec 21 17:53:15 2023 +0700
+
+    test
+
+[1mdiff --git a/src/test/java/ClientInterface.java b/src/test/java/ClientInterface.java[m
+[1mindex 5b64af5..1c606c9 100644[m
+[1m--- a/src/test/java/ClientInterface.java[m
+[1m+++ b/src/test/java/ClientInterface.java[m
+[36m@@ -18,7 +18,7 @@[m [mpublic class ClientInterface extends JFrame {[m
+     private boolean isMicOn = true;[m
+     private static JLabel video = new JLabel();[m
+     private static JLabel videoIn = new JLabel();[m
+[31m-    private ImageIcon ic;[m
+[32m+[m[32m    private ImageIcon icOut;[m[41m[m
+     private BufferedImage br;[m
+     private ObjectInputStream in;[m
+     private ObjectOutputStream out;[m
+[36m@@ -82,8 +82,8 @@[m [mpublic class ClientInterface extends JFrame {[m
+ [m
+                         while (true) {[m
+                             br = webcam.getImage();[m
+[31m-                            ic = new ImageIcon(br);[m
+[31m-                            out.writeObject(ic);[m
+[32m+[m[32m                            icOut = new ImageIcon(br);[m[41m[m
+[32m+[m[32m                            out.writeObject(icOut);[m[41m[m
+                             out.flush();[m
+                             System.out.println("outToHost");[m
+                         }[m
+[36m@@ -102,12 +102,12 @@[m [mpublic class ClientInterface extends JFrame {[m
+ [m
+                         while (sendData) {[m
+                             ImageIcon icIn = (ImageIcon) in.readObject();[m
+[31m-                            if (ic == null) {[m
+[32m+[m[32m                            if (icIn == null) {[m[41m[m
+                                 // Camera may be off[m
+                                 video.setIcon(null);[m
+                                 System.out.println("Camera is off");[m
+                             } else {[m
+[31m-                                video.setIcon(ic);[m
+[32m+[m[32m                                video.setIcon(icIn);[m[41m[m
+                                 System.out.println("inFromHost");[m
+                             }[m
+                         }[m
+[1mdiff --git a/src/test/java/HostInterface.java b/src/test/java/HostInterface.java[m
+[1mindex d03027f..7fbf2ab 100644[m
+[1m--- a/src/test/java/HostInterface.java[m
+[1m+++ b/src/test/java/HostInterface.java[m
+[36m@@ -94,13 +94,13 @@[m [mpublic class HostInterface extends JFrame {[m
+                         in = new ObjectInputStream(clientSocket.getInputStream());[m
+ [m
+                         while (true) {[m
+[31m-                            ImageIcon ic = (ImageIcon) in.readObject();[m
+[31m-                            if (ic == null) {[m
+[32m+[m[32m                            ImageIcon icIn = (ImageIcon) in.readObject();[m[41m[m
+[32m+[m[32m                            if (icIn == null) {[m[41m[m
+                                 // Camera may be off[m
+                                 video.setIcon(null);[m
+                                 System.out.println("Camera is off");[m
+                             } else {[m
+[31m-                                video.setIcon(ic);[m
+[32m+[m[32m                                video.setIcon(icIn);[m[41m[m
+                                 System.out.println("inFromClient");[m
+                             }[m
+                         }[m
+
+[33mcommit 2ee012c123489e87c6fe146635e9b6878d1578f9[m
+Author: trường nguyễn xuân <91445722+xuantruong1106@users.noreply.github.com>
+Date:   Thu Dec 21 17:48:40 2023 +0700
+
+    test
+
+[1mdiff --git a/src/test/java/ClientInterface.java b/src/test/java/ClientInterface.java[m
+[1mindex 2270e71..5b64af5 100644[m
+[1m--- a/src/test/java/ClientInterface.java[m
+[1m+++ b/src/test/java/ClientInterface.java[m
+[36m@@ -102,8 +102,14 @@[m [mpublic class ClientInterface extends JFrame {[m
+ [m
+                         while (sendData) {[m
+                             ImageIcon icIn = (ImageIcon) in.readObject();[m
+[31m-                            videoIn.setIcon(icIn);[m
+[31m-                            System.out.println("inFromHost");[m
+[32m+[m[32m                            if (ic == null) {[m[41m[m
+[32m+[m[32m                                // Camera may be off[m[41m[m
+[32m+[m[32m                                video.setIcon(null);[m[41m[m
+[32m+[m[32m                                System.out.println("Camera is off");[m[41m[m
+[32m+[m[32m                            } else {[m[41m[m
+[32m+[m[32m                                video.setIcon(ic);[m[41m[m
+[32m+[m[32m                                System.out.println("inFromHost");[m[41m[m
+[32m+[m[32m                            }[m[41m[m
+                         }[m
+                     } catch (IOException | ClassNotFoundException ex) {[m
+                         Logger.getLogger(HostInterface.class.getName()).log(Level.SEVERE, null, ex);[m
+[1mdiff --git a/src/test/java/HostInterface.java b/src/test/java/HostInterface.java[m
+[1mindex 422a4b4..d03027f 100644[m
+[1m--- a/src/test/java/HostInterface.java[m
+[1m+++ b/src/test/java/HostInterface.java[m
+[36m@@ -95,8 +95,14 @@[m [mpublic class HostInterface extends JFrame {[m
+ [m
+                         while (true) {[m
+                             ImageIcon ic = (ImageIcon) in.readObject();[m
+[31m-                            video.setIcon(ic);[m
+[31m-                            System.out.println("inFromClient");[m
+[32m+[m[32m                            if (ic == null) {[m[41m[m
+[32m+[m[32m                                // Camera may be off[m[41m[m
+[32m+[m[32m                                video.setIcon(null);[m[41m[m
+[32m+[m[32m                                System.out.println("Camera is off");[m[41m[m
+[32m+[m[32m                            } else {[m[41m[m
+[32m+[m[32m                                video.setIcon(ic);[m[41m[m
+[32m+[m[32m                                System.out.println("inFromClient");[m[41m[m
+[32m+[m[32m                            }[m[41m[m
+                         }[m
+                     } catch (IOException | ClassNotFoundException ex) {[m
+                         Logger.getLogger(HostInterface.class.getName()).log(Level.SEVERE, null, ex);[m
