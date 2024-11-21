@@ -48,7 +48,7 @@ public class MainInterface extends JFrame {
         
         setLocationRelativeTo(null);
         try {
-            Socket sk = new Socket("192.168.0.144", 1106);
+          //  Socket sk = new Socket("localhost", 1106);
 
             buttonCreateVideoRoom.addActionListener(new ActionListener() {
                 @Override

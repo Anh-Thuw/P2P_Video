@@ -32,25 +32,25 @@ public class Server extends RemoveClientOutServer {
             if (rm.clientInfos.isEmpty()) {
                 System.out.println("There are no clients connected");
                
-//                dos.writeUTF("Hello, no clients available.");
+                dos.writeUTF("Hello, no clients available.");
             } else {
                 System.out.println("There are clients connected");
                 for (ClientInfo info : rm.clientInfos) {
-//                    dos.writeUTF("Hello, clients available: " + info.getClientName() + " Port: " + info.getPort());
+                    dos.writeUTF("Hello, clients available: " + info.getClientName() + " Port: " + info.getPort());
                 }
             }
-//            dos.writeUTF("Hello, no clients available.");
+            dos.writeUTF("Hello, no clients available.");
             
-//            String clientName = din.readUTF();
-//            System.out.println("Client connected: " + clientName);
-//
-//            // Read port from client
-//            int clientPort = din.readInt();
-//            System.out.println("Received port from client: " + clientPort);
+            String clientName = din.readUTF();
+            System.out.println("Client connected: " + clientName);
 
-            // Save client information to the list of clients
-//            ClientInfo clientInfo = new ClientInfo(clientPort, clientSocket, clientName);
-//            rm.clientInfos.add(clientInfo);
+            // Read port from client
+            int clientPort = din.readInt();
+            System.out.println("Received port from client: " + clientPort);
+
+           //  Save client information to the list of clients
+            ClientInfo clientInfo = new ClientInfo(clientPort, clientSocket, clientName);
+            rm.clientInfos.add(clientInfo);
         } catch (Exception e) {
             // Handle client disconnection without stopping the server
             System.out.println("Client disconnected.");
