@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="demo" />
+    <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="create meet">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/doc/Script-6.sql" beforeDir="false" afterPath="$PROJECT_DIR$/doc/Script-6.sql" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -193,7 +196,23 @@
       <option name="project" value="LOCAL" />
       <updated>1731790570006</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="create meet">
+      <option name="closed" value="true" />
+      <created>1732324482819</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1732324482819</updated>
+    </task>
+    <task id="LOCAL-00004" summary="create meet">
+      <option name="closed" value="true" />
+      <created>1732324494785</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1732324494786</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,6 +221,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="è" />
     <MESSAGE value="demo" />
-    <option name="LAST_COMMIT_MESSAGE" value="demo" />
+    <MESSAGE value="create meet" />
+    <option name="LAST_COMMIT_MESSAGE" value="create meet" />
   </component>
 </project>
