@@ -1,5 +1,7 @@
 package Client.tmpl;
 
+import Client.services.ClientThreadMeetSend;
+
 import javax.swing.*;
 import java.awt.*;
 import java.net.Socket;
@@ -92,12 +94,14 @@ public class Create_Host_Video_Room extends JFrame {
                 } else {
                     try {
                         int port = Integer.parseInt(portText);
-                      //  String username = "thu";
-                        RoomMeet roomMeet = new RoomMeet(username ,port);
-                        setVisible(false);
-                        dispose();
+
+                        ClientThreadMeetSend clientThreadMeetSend = new ClientThreadMeetSend("create",socket , username , port ,  this );
+                        clientThreadMeetSend.start();
+                        
                     } catch (NumberFormatException ex) {
                         JOptionPane.showMessageDialog(this, "Invalid port number. Please enter a valid integer.", "Input Error", JOptionPane.ERROR_MESSAGE);
+                    } catch (Exception ex) {
+                        throw new RuntimeException(ex);
                     }
                 }
             });

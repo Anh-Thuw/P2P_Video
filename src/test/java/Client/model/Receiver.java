@@ -1,4 +1,4 @@
-package com.model;
+package Client.model;
 
 import java.awt.Font;
 import java.util.ArrayList;
