@@ -15,94 +15,89 @@ import java.net.UnknownHostException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.List;
 
 
 public class RoomMain extends JPanel {
-    private JButton              btnEndCall, btnMute, btnToggleVideo , btnChatToggle;
+    private static final int WIDTH = 1465, HEIGHT = 780;
+    private static final int WEBCAM_WIDTH = 640, WEBCAM_HEIGHT = 480;
+
+    // UI Components
+    private JButton              btnSend , btnEndCall, btnMute, btnToggleVideo , btnChatToggle;
     private JLabel               lblTime, lblRoomCode;
-    private JPanel               chatPanel;
+    private JPanel               chatPanel , webcamPanel ;
     private JTextArea            chatArea;
+    private JScrollPane          chatScrollPane;
+
     private JTextField           chatInput;
     private Timer                timer;
     private Webcam               webcam;
-    private boolean              isCameraOn = true;
-    private boolean              isMicOn = true;
-    private static   JLabel      video = new JLabel();
-    //    private static JLabel videoOut = new JLabel();
-    private ImageIcon            icOut;
-    private BufferedImage        br;
+    // Networking
     private ObjectInputStream    in;
     private ObjectOutputStream   out;
-    private Socket               clientSocket;
     private ServerSocket         serverSocket;
+    private Socket               clientSocket;
+    private List<Socket>         connectedClients = new ArrayList<>();
     private WebcamPanel          camPanel;
-    private final List<ObjectOutputStream> clients = new ArrayList<>();
+    private final List<ObjectOutputStream> clients = new CopyOnWriteArrayList<>();
+
+    // State Variables
     private String               username ;
-    private int port ;
+    private int                  port ;
+    private boolean              isCameraOn = true;
+    private boolean              isMicOn = true;
+
+
     public RoomMain (int port , String username) {
         try {
             this.username 		= username ;
             this.port 		    = port ;
             Frame_RoomMain();
+            setupNetworking();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-
     public void Frame_RoomMain() throws UnknownHostException {
 
         setBackground(new Color(204, 255, 255));
         setLayout(null);
-        setPreferredSize(new Dimension(1465, 780));
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-//        JPanel containerPanelLeftAndRight = new JPanel(new GridLayout(1, 2));
-//        JPanel panelCenter = new JPanel(new BorderLayout());
-
-        // Video panel placeholder
-        JPanel webcamPanel = new JPanel(new BorderLayout());
-        webcamPanel.setBounds(20, 20, 1421, 631);
+        // Webcam Panel
+        webcamPanel = new JPanel(new BorderLayout());
+        webcamPanel.setBounds(20, 20, WIDTH - 44, 631);
         webcamPanel.setBackground(new Color(229, 255, 255));
-
-        camPanel = webcamPanel();
+        camPanel = initWebcamPanel();
         webcamPanel.add(camPanel, BorderLayout.CENTER);
         add(webcamPanel);
 
-
-        // Button to toggle chat panel visibility
-        btnChatToggle = new JButton("Chat");
+        // Other buttons and layout
         btnChatToggle = createButton("chat.png", null);
         btnChatToggle.setBackground(Color.PINK);
-        btnChatToggle.setBounds(1356, 661, 70, 50);
+        btnChatToggle.setBounds(WIDTH - 109, 661, 70, 50);
         btnChatToggle.addActionListener(e -> toggleChatPanel());
         add(btnChatToggle);
 
-        // Bottom buttons with icons
-        btnEndCall = new JButton();
         btnEndCall = createButton("IconExit.png", null);
         btnEndCall.setBounds(420, 661, 70, 50);
         btnEndCall.setBackground(new Color(255, 102, 102));
-        btnEndCall.setFocusPainted(false);
-        add(btnEndCall);
         btnEndCall.addActionListener(e -> exitVideoRoom());
+        add(btnEndCall);
 
-        btnMute = new JButton();
         btnMute = createButton("IconOnMic.png", "IconOffMic.png");
         btnMute.setBounds(567, 661, 70, 50);
         btnMute.setBackground(new Color(102, 204, 255));
-        btnMute.setFocusPainted(false);
         btnMute.addActionListener(e -> toggleMute(btnMute));
         add(btnMute);
 
-        btnToggleVideo = new JButton();
         btnToggleVideo = createButton("IconOnVideo.png", "IconOffVideo.png");
         btnToggleVideo.setBounds(711, 661, 70, 50);
         btnToggleVideo.setBackground(new Color(153, 255, 204));
-        btnToggleVideo.setFocusPainted(false);
         btnToggleVideo.addActionListener(e -> toggleVideo(btnToggleVideo));
         add(btnToggleVideo);
 
@@ -111,40 +106,30 @@ public class RoomMain extends JPanel {
         lblTime.setFont(new Font("Tahoma", Font.BOLD, 14));
         add(lblTime);
 
-        InetAddress ip = InetAddress.getLocalHost();
-        String portString = String.valueOf(port);
-
-        lblRoomCode = new JLabel("IP: " + ip.getHostAddress() + "- Port: " + portString);
-        lblRoomCode.setBounds(20, 681, 150, 30);
+        lblRoomCode = new JLabel("IP: " + InetAddress.getLocalHost().getHostAddress() + " - Port: " + port);
+        lblRoomCode.setBounds(20, 681, 300, 30);
         lblRoomCode.setFont(new Font("Tahoma", Font.BOLD, 14));
         add(lblRoomCode);
 
-        JScrollPane chatScrollPane = new JScrollPane();
-        chatScrollPane.setBounds(1128, 20, 313, 631);
+        // Chat panel setup
+        chatPanel = new JPanel(null);
+        chatScrollPane = new JScrollPane(chatPanel);
+        chatScrollPane.setBounds(WIDTH - 337, 20, 313, 631);
         add(chatScrollPane);
-
-        chatPanel = new JPanel();
-        chatScrollPane.setViewportView(chatPanel);
-        chatPanel.setBackground(new Color(240, 255, 255));
-        chatPanel.setLayout(null);
 
         chatArea = new JTextArea();
         chatArea.setBounds(0, 0, 293, 605);
         chatArea.setEditable(false);
-        chatArea.setFont(new Font("Tahoma", Font.PLAIN, 16));
-        chatArea.setBackground(new Color(240, 255, 255));
         chatPanel.add(chatArea);
 
         chatInput = new JTextField();
         chatInput.setBounds(0, 605, 233, 26);
-        chatInput.setFont(new Font("Tahoma", Font.PLAIN, 16));
         chatPanel.add(chatInput);
 
-        JButton btnSend = new JButton("Send");
+        btnSend = new JButton("Send");
         btnSend.setBounds(240, 605, 71, 26);
         btnSend.setBackground(new Color(153, 204, 255));
         btnSend.setForeground(Color.WHITE);
-        btnSend.setFocusPainted(false);
         btnSend.addActionListener(e -> sendMessageToAll());
         chatPanel.add(btnSend);
 
@@ -152,86 +137,125 @@ public class RoomMain extends JPanel {
 
         timer = new Timer(1000, e -> updateTime());
         timer.start();
-
+    }
+    private void setupNetworking() {
         new Thread(() -> {
             try {
-                System.out.println(port);
                 serverSocket = new ServerSocket(port);
-                System.out.println("Server socket initialized");
-                clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
-
-                // Thread for receiving data
-                new Thread(() -> {
-                    try {
-                        in = new ObjectInputStream(clientSocket.getInputStream());
-
-                        while (true) {
-                            ImageIcon ic = (ImageIcon) in.readObject();
-                            video.setIcon(ic);
-                            System.out.println("inFromClient");
-                        }
-                    } catch (IOException | ClassNotFoundException ex) {
-                        Logger.getLogger(RoomMain.class.getName()).log(Level.SEVERE, null, ex);
-                        video.setIcon(null);
-                    }
-                }).start();
-
-                new Thread(() -> {
-                    try {
-                        out = new ObjectOutputStream(clientSocket.getOutputStream());
-
-                        new Thread(() -> {
-                            webcam.open();
-                            isCameraOn = true;
-                            isMicOn = true;
-                        }).start();
-
-                        while (true) {
-
-                            br = webcam.getImage();
-                            icOut = new ImageIcon(br);
-                            out.writeObject(icOut);
-                            out.flush();
-                            System.out.println("outToClient");
-
-                            new Thread(() -> handleClient(clientSocket, out)).start();
-
-                        }
-                    } catch (IOException ex) {
-                        Logger.getLogger(RoomMain.class.getName()).log(Level.SEVERE, null, ex);
-                        video.setIcon(null);
-                    }
-                }).start();
-
-
-            } catch (IOException ex) {
-                Logger.getLogger(RoomMain.class.getName()).log(Level.SEVERE, null, ex);
-                video.setIcon(null);
+                while (true) {
+                    Socket newClientSocket = serverSocket.accept();
+                    connectedClients.add(newClientSocket);
+                    ObjectOutputStream clientOut = new ObjectOutputStream(newClientSocket.getOutputStream());
+                    clients.add(clientOut);
+                    new Thread(() -> receiveVideo(newClientSocket)).start();
+                    new Thread(() -> sendVideoToClient(newClientSocket)).start();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }).start();
     }
+    private void sendVideoToClient(Socket clientSocket) {
+        try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
+            if (!webcam.isOpen()) webcam.open();
+            while (isCameraOn) {
+                BufferedImage frame = webcam.getImage();
+                ImageIcon imageIcon = new ImageIcon(frame);
+                out.writeObject(imageIcon);
+                out.flush();
+                Thread.sleep(50); // Reduce frequency to ~20 FPS
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Gửi video đến các client đã kết nối
+    private void sendDataToClient(Socket clientSocket) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream());
+            webcam.open();
+            while (isCameraOn) {
+                BufferedImage frame = webcam.getImage();
+                ImageIcon imageIcon = new ImageIcon(frame);
+                out.writeObject(imageIcon); // Gửi hình ảnh đến client
+                out.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Nhận video từ các client khác
+    private void receiveVideo(Socket clientSocket) {
+        try {
+            ObjectInputStream in = new ObjectInputStream(clientSocket.getInputStream());
+            while (true) {
+                ImageIcon receivedImage = (ImageIcon) in.readObject();
+                SwingUtilities.invokeLater(() -> {
+                    JLabel videoLabel = new JLabel(receivedImage);
+                    updateVideoDisplay(videoLabel);
+                });
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Cập nhật hiển thị video nhận được
+    private void updateVideoDisplay(JLabel videoLabel) {
+        webcamPanel.removeAll();
+        webcamPanel.add(videoLabel);
+        webcamPanel.revalidate();
+        webcamPanel.repaint();
+    }
+
+    public void connectToOtherClients() {
+        for (Socket clientSocket : connectedClients) {
+            new Thread(() -> sendDataToClient(clientSocket)).start();
+        }
+    }
+    private void broadcastClientList() {
+        try {
+            for (ObjectOutputStream client : clients) {
+                client.writeObject("CLIENT_LIST_UPDATED");
+                client.flush();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void receiveDataFromClient(Socket clientSocket) {
+        try {
+            ObjectInputStream clientIn = new ObjectInputStream(clientSocket.getInputStream());
+            while (true) {
+                ImageIcon receivedImage = (ImageIcon) clientIn.readObject();
+                SwingUtilities.invokeLater(() -> {
+                    JLabel videoLabel = new JLabel(receivedImage);
+                    updateVideoDisplay(videoLabel);
+                });
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private WebcamPanel initWebcamPanel() {
+        webcam = Webcam.getDefault();
+        webcam.setViewSize(new Dimension(WEBCAM_WIDTH, WEBCAM_HEIGHT));
+        return new WebcamPanel(webcam);
+    }
+
     private void sendMessageToAll() {
         String message = chatInput.getText();
         if (!message.trim().isEmpty()) {
-            chatArea.append( username+ ":"+ message + "\n");
+            chatArea.append(username + ": " + message + "\n");
             broadcastMessage("You: " + message);
             chatInput.setText("");
         }
     }
 
-    private void handleClient(Socket socketClient, ObjectOutputStream out) {
-        try (ObjectInputStream clientIn = new ObjectInputStream(socketClient.getInputStream())) {
-            while (true) {
-                String message = (String) clientIn.readObject();
-                broadcastMessage("Client: " + message);
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            Logger.getLogger(RoomMain.class.getName()).log(Level.SEVERE, null, e);
-        } finally {
-            clients.remove(out);
-        }
-    }
     private void broadcastMessage(String message) {
         for (ObjectOutputStream client : clients) {
             try {
@@ -245,22 +269,20 @@ public class RoomMain extends JPanel {
 
     private void toggleChatPanel() {
         if (chatPanel.isVisible()) {
-            // Ẩn chat panel và trả lại kích thước video panel
             chatPanel.setVisible(false);
-            // Đẩy video panel về lại vị trí ban đầu
-            JPanel webcamPanel = (JPanel) getComponent(0);  // Lấy video panel đầu tiên
+            webcamPanel = (JPanel) getComponent(0);
             webcamPanel.setBounds(20, 20, 1421, 631);
             revalidate();
             repaint();
         } else {
-            // Hiển thị chat panel và di chuyển video panel sang trái
             chatPanel.setVisible(true);
-            JPanel webcamPanel = (JPanel) getComponent(0);  // Lấy video panel đầu tiên
-            webcamPanel.setBounds(20, 20, 1050, 631); // Điều chỉnh kích thước video panel
+            webcamPanel = (JPanel) getComponent(0);
+            webcamPanel.setBounds(20, 20, 1050, 631);
             revalidate();
             repaint();
         }
     }
+
     private void toggleVideo(JButton buttonOnOffVideo){
         if (isCameraOn) {
             updateButtonIcon(buttonOnOffVideo, "IconOffVideo.png");
@@ -334,8 +356,13 @@ public class RoomMain extends JPanel {
                 webcam.close();
                 webcam = null;
             }
+            for (ObjectOutputStream client : clients) {
+                client.close();
+            }
+            clients.clear();
+            connectedClients.clear();
 
-            video.setIcon(null);
+         //   video.setIcon(null);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

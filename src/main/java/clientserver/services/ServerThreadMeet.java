@@ -122,7 +122,7 @@ public class ServerThreadMeet extends Thread {
 			}
 
 			// Thêm người dùng vào bảng meet_participants
-			String sqlInsertParticipant = "INSERT INTO meet_participants (meet_id, user_id, joined_at) VALUES (?, ?, ?, NOW())";
+			String sqlInsertParticipant = "INSERT INTO meet_participants (meet_id, user_id, joined_at) VALUES (?, ?, NOW())";
 			PreparedStatement psInsertParticipant = connection.prepareStatement(sqlInsertParticipant);
 			psInsertParticipant.setInt(1, meetId);
 			psInsertParticipant.setInt(2, userId);

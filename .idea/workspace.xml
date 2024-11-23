@@ -4,9 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="create meet">
+    <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="sql">
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/mysql_connector_j_9_0_0.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/doc/Script-6.sql" beforeDir="false" afterPath="$PROJECT_DIR$/doc/Script-6.sql" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/clientserver/services/ServerThreadMeet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/clientserver/services/ServerThreadMeet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycompany/baitaplonmonhoc/CreateVideoRoomApplicationInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycompany/baitaplonmonhoc/DefaulApplicationInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycompany/baitaplonmonhoc/DemoApp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycompany/baitaplonmonhoc/Joined.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycompany/baitaplonmonhoc/OAuthSwingApp.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycompany/baitaplonmonhoc/RunApplicationInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycompany/baitaplonmonhoc/RunCreateVideoRoomApplicationInterface.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/mycompany/baitaplonmonhoc/RunJoined.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Register_1.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Register_1.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/RoomMain.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/RoomMain.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/RoomMeet.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/RoomMeet.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +73,7 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;main&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/HK5_2024/DACS4/P2P_Video/lib/mysql-connector-j-9.0.0.jar&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/lib/mysql-connector-j-9.0.0.jar&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -80,6 +92,19 @@
     </key>
   </component>
   <component name="RunManager" selected="Application.Login">
+    <configuration name="Connect (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
+      <module name="P2P_video_call" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="clientserver.tmpl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Connect" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
       <module name="P2P_video_call" />
@@ -99,19 +124,6 @@
       <extension name="coverage">
         <pattern>
           <option name="PATTERN" value="clientserver.db.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Login (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="Client.tmpl.Login" />
-      <module name="P2P_video_call" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="Client.tmpl.*" />
           <option name="ENABLED" value="true" />
         </pattern>
       </extension>
@@ -140,19 +152,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Connect (1)" />
       <item itemvalue="Application.Connect" />
       <item itemvalue="Application.ConnectDB" />
       <item itemvalue="Application.Login" />
-      <item itemvalue="Application.Login (1)" />
       <item itemvalue="Application.MainInterface (2)" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.Login" />
+        <item itemvalue="Application.Connect (1)" />
         <item itemvalue="Application.Connect" />
-        <item itemvalue="Application.Login (1)" />
-        <item itemvalue="Application.ConnectDB" />
         <item itemvalue="Application.MainInterface (2)" />
+        <item itemvalue="Application.ConnectDB" />
       </list>
     </recent_temporary>
   </component>
@@ -179,6 +191,8 @@
       <workItem from="1732046813343" duration="5016000" />
       <workItem from="1732154933890" duration="7790000" />
       <workItem from="1732203391586" duration="3877000" />
+      <workItem from="1732346873965" duration="7251000" />
+      <workItem from="1732371685184" duration="7390000" />
     </task>
     <task id="LOCAL-00001" summary="è">
       <option name="closed" value="true" />
@@ -212,16 +226,36 @@
       <option name="project" value="LOCAL" />
       <updated>1732324494786</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="sql">
+      <option name="closed" value="true" />
+      <created>1732324596252</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1732324596252</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="è" />
     <MESSAGE value="demo" />
     <MESSAGE value="create meet" />
-    <option name="LAST_COMMIT_MESSAGE" value="create meet" />
+    <MESSAGE value="sql" />
+    <option name="LAST_COMMIT_MESSAGE" value="sql" />
   </component>
 </project>

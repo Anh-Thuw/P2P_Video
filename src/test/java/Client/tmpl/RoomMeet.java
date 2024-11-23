@@ -46,10 +46,5 @@ public class RoomMeet extends JFrame {
         getContentPane().add(tabbedPane);
 
         setVisible(true);
-
-//        ClientThreadMeetSend clientThreadMeetSend = new ClientThreadMeetSend(socket , username , port ,  this );
-//        clientThreadMeetSend.doMeet(port , username );
-//        clientThreadMeetSend.start();
-
     }
 }

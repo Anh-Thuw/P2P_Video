@@ -19,21 +19,19 @@ import javax.swing.Timer;
 
 public class Register_1 extends JFrame {
 
-	private static final long serialVersionUID = 1L;
-	private JPanel contentPane;
-	private JTextField tf_email;
-	private JTextField tf_otp;
-	private JButton btn_otp;
-	private JButton btn_checkOTP;
-	private Socket socket;
-	private JLabel lb_time;
-	private int timeRemaining = 60;
-	private Timer timer;
-	private CheckInfor checkInfor ;
+	private static final long		 serialVersionUID = 1L;
+	private JPanel					 contentPane;
+	private JTextField				 tf_email , tf_otp;
+	private JButton					 btn_otp , btn_checkOTP;
+	private Socket					 socket;
+	private JLabel					  lb_timeOtp,  lb_time , lb_email , lbl_title, lb_otp,    lb_emailError;
+	private int 					 timeRemaining = 60;
+	private Timer					 timer;
+	private CheckInfor				 checkInfor ;
 	
 	public Register_1(Socket socket) {
 		try {
-			this.socket = socket;
+			this.socket 	= socket;
 			this.checkInfor = new CheckInfor(socket, null, null, null, this);
 			checkInfor.start();
 		} catch (Exception e) {
@@ -60,13 +58,19 @@ public class Register_1 extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 
-		JLabel lbl_title = new JLabel("MEET TEAM - REGISTER");
+		lbl_title = new JLabel("MEET TEAM - REGISTER");
 		lbl_title.setFont(new Font("Tahoma", Font.BOLD, 22));
 		lbl_title.setForeground(new Color(70, 130, 180));
 		lbl_title.setBounds(120, 30, 300, 30);
 		contentPane.add(lbl_title);
 
-		JLabel lb_email = new JLabel("Email:");
+		lb_emailError = new JLabel("");
+		lb_emailError.setFont(new Font("Tahoma", Font.ITALIC, 14));
+		lb_emailError.setForeground(Color.RED);
+		lb_emailError.setBounds(150, 150, 280, 20); // Vị trí ngay dưới tf_email
+		contentPane.add(lb_emailError);
+
+		lb_email = new JLabel("Email:");
 		lb_email.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lb_email.setBounds(50, 120, 100, 25);
 		contentPane.add(lb_email);
@@ -76,7 +80,7 @@ public class Register_1 extends JFrame {
 		tf_email.setBounds(150, 120, 280, 30);
 		contentPane.add(tf_email);
 
-		JLabel lb_otp = new JLabel("Code OTP:");
+		lb_otp = new JLabel("Code OTP:");
 		lb_otp.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lb_otp.setBounds(50, 170, 100, 25);
 		contentPane.add(lb_otp);
@@ -118,7 +122,7 @@ public class Register_1 extends JFrame {
 		btn_checkOTP.setBounds(310, 239, 120, 40);
 		contentPane.add(btn_checkOTP);
 
-		JLabel lb_timeOtp = new JLabel("Time Remaining:");
+		lb_timeOtp = new JLabel("Time Remaining:");
 		lb_timeOtp.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		lb_timeOtp.setBounds(301, 333, 145, 20);
 		contentPane.add(lb_timeOtp);
@@ -142,8 +146,17 @@ public class Register_1 extends JFrame {
 	}
 
 	public void doEmail() throws Exception {
+		String email = tf_email.getText().trim();
+		// Biểu thức chính quy để kiểm tra định dạng email
+		String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@[a-zA-Z0-9-]+(?:\\.[a-zA-Z0-9-]+)*$";
+		if (!email.matches(emailRegex)) {
+			lb_emailError.setText("Invalid email format! Please try again.");
+			return;
+		}
+		// Nếu hợp lệ, gửi yêu cầu email và xóa lỗi
+		lb_emailError.setText("");
 		//checkInfor = new CheckInfor(socket, null, null, tf_email.getText(), this);
-		checkInfor.doEmail(tf_email.getText());
+		checkInfor.doEmail(email);
 	//	checkInfor.start();
 	}
 
@@ -160,10 +173,3 @@ public class Register_1 extends JFrame {
 	    }
 	}
 }
-
-
-
-//checkInfor = new CheckInfor(socket, null, null, tf_email.getText(), this);
-//
-//checkInfor.doCheckOTP(otp);
-//checkInfor.start();
