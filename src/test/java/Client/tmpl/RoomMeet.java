@@ -35,7 +35,8 @@ public class RoomMeet extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBackground(Color.WHITE);
 
-        RoomMain mainRoom = new RoomMain( port,  username);
+//        RoomMain mainRoom = new RoomMain( port,  username);
+        TestChat mainRoom = new TestChat( port,  username);
         mainRoom.setBackground(Color.LIGHT_GRAY);
         tabbedPane.addTab("Main Room", mainRoom);
 

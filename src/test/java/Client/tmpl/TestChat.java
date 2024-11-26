@@ -19,7 +19,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 
-public class RoomMain extends JPanel {
+public class TestChat extends JPanel {
     private static final int WIDTH = 1465, HEIGHT = 780;
     private static final int WEBCAM_WIDTH = 640, WEBCAM_HEIGHT = 480;
 
@@ -49,30 +49,30 @@ public class RoomMain extends JPanel {
     private boolean              isMicOn = true;
 
 
-    public RoomMain (int port , String username) {
+    public TestChat (int port , String username) {
         try {
             this.username 		= username ;
             this.port 		    = port ;
-            Frame_RoomMain();
+            Frame_TestChat();
             setupNetworking();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    public void Frame_RoomMain() throws UnknownHostException {
+    public void Frame_TestChat() throws UnknownHostException {
 
         setBackground(new Color(204, 255, 255));
         setLayout(null);
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
 
-        // Webcam Panel
-        webcamPanel = new JPanel(new BorderLayout());
-        webcamPanel.setBounds(20, 20, WIDTH - 44, 631);
-        webcamPanel.setBackground(new Color(229, 255, 255));
-        camPanel = initWebcamPanel();
-        webcamPanel.add(camPanel, BorderLayout.CENTER);
-        add(webcamPanel);
+//        // Webcam Panel
+//        webcamPanel = new JPanel(new BorderLayout());
+//        webcamPanel.setBounds(20, 20, WIDTH - 44, 631);
+//        webcamPanel.setBackground(new Color(229, 255, 255));
+//        camPanel = initWebcamPanel();
+//        webcamPanel.add(camPanel, BorderLayout.CENTER);
+//        add(webcamPanel);
 
         // Other buttons and layout
         btnChatToggle = createButton("chat.png", null);
@@ -311,7 +311,7 @@ public class RoomMain extends JPanel {
             clients.clear();
             connectedClients.clear();
 
-         //   video.setIcon(null);
+            //   video.setIcon(null);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
