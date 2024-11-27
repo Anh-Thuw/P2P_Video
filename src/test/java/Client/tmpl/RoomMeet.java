@@ -30,7 +30,6 @@ public class RoomMeet extends JFrame {
         setTitle("Room Meeting");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
-        // Lấy kích thước màn hình hiện tại
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         setSize(screenSize.width, screenSize.height); // Đặt kích thước JFrame bằng kích thước màn hình
 

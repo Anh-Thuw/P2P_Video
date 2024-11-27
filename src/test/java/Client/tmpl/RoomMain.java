@@ -228,20 +228,21 @@ public class RoomMain extends JPanel {
     }
 
     private void toggleChatPanel() {
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
         if (chatPanel.isVisible()) {
             chatPanel.setVisible(false);
-            webcamPanel = (JPanel) getComponent(0);
-            webcamPanel.setBounds(20, 20, 1421, 631);
-            revalidate();
-            repaint();
+            webcamPanel.setBounds(20, 20, screenWidth - 40, (int) (screenHeight * 0.8));
         } else {
             chatPanel.setVisible(true);
-            webcamPanel = (JPanel) getComponent(0);
-            webcamPanel.setBounds(20, 20, 1050, 631);
-            revalidate();
-            repaint();
+            webcamPanel.setBounds(20, 20, screenWidth - 360, (int) (screenHeight * 0.8));
         }
+        revalidate();
+        repaint();
     }
+
 
     private void toggleVideo(JButton buttonOnOffVideo){
         if (isCameraOn) {
