@@ -20,7 +20,6 @@ import java.util.List;
 
 
 public class RoomMain extends JPanel {
-    private static final int WIDTH = 1465, HEIGHT = 780;
     private static final int WEBCAM_WIDTH = 640, WEBCAM_HEIGHT = 480;
 
     // UI Components
@@ -156,13 +155,66 @@ public class RoomMain extends JPanel {
                     connectedClients.add(newClientSocket);
                     out = new ObjectOutputStream(newClientSocket.getOutputStream());
                     clients.add(out);
+                    //video
                     new Thread(() -> receiveVideo(newClientSocket)).start();
                     new Thread(() -> sendVideoToClient(newClientSocket)).start();
+                    // chat
+                    new Thread(() -> handleClientMessages(newClientSocket)).start();
+
+
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
+    }
+
+    private void handleClientMessages(Socket clientSocket) {
+        try {
+            in = new ObjectInputStream(clientSocket.getInputStream());
+            while (true) {
+                String message = (String) in.readObject();
+                broadcastMessage(message);
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void sendMessageToAll() {
+        String message = chatInput.getText().trim();
+        if (!message.isEmpty()) {
+            try {
+                String formattedMessage = username + ": " + message;
+
+                // Send to server
+                out.writeObject(formattedMessage);
+                out.flush();
+
+                // Display in local chat area
+                chatArea.append("Me: " + message + "\n");
+                chatInput.setText("");
+
+                // Broadcast to other clients
+                broadcastMessage(formattedMessage);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void broadcastMessage(String message) {
+        for (ObjectOutputStream clientOut : clients) {
+            try {
+                clientOut.writeObject(message);
+                clientOut.flush();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        // Append message locally
+        chatArea.append(message + "\n");
     }
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {
@@ -205,26 +257,6 @@ public class RoomMain extends JPanel {
         webcam = Webcam.getDefault();
         webcam.setViewSize(new Dimension(WEBCAM_WIDTH, WEBCAM_HEIGHT));
         return new WebcamPanel(webcam);
-    }
-
-    private void sendMessageToAll() {
-        String message = chatInput.getText();
-        if (!message.trim().isEmpty()) {
-            chatArea.append(username + ": " + message + "\n");
-            broadcastMessage("You: " + message);
-            chatInput.setText("");
-        }
-    }
-
-    private void broadcastMessage(String message) {
-        for (ObjectOutputStream client : clients) {
-            try {
-                client.writeObject(message);
-                client.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     private void toggleChatPanel() {
