@@ -29,14 +29,18 @@ public class RoomMeet extends JFrame {
 
         setTitle("Room Meeting");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setSize(1465, 780);
-        setLocationRelativeTo(null);
+
+        // Lấy kích thước màn hình hiện tại
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        setSize(screenSize.width, screenSize.height); // Đặt kích thước JFrame bằng kích thước màn hình
+
+        setExtendedState(JFrame.MAXIMIZED_BOTH); // Thiết lập toàn màn hình
+        setUndecorated(true); // Tùy chọn: Loại bỏ thanh tiêu đề (nếu muốn toàn màn hình tuyệt đối)
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBackground(Color.WHITE);
 
-//        RoomMain mainRoom = new RoomMain( port,  username);
-        TestChat mainRoom = new TestChat( port,  username);
+        RoomMain mainRoom = new RoomMain(port, username);
         mainRoom.setBackground(Color.LIGHT_GRAY);
         tabbedPane.addTab("Main Room", mainRoom);
 
@@ -48,4 +52,5 @@ public class RoomMeet extends JFrame {
 
         setVisible(true);
     }
+
 }

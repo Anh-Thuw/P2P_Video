@@ -62,70 +62,80 @@ public class RoomMain extends JPanel {
     }
     public void Frame_RoomMain() throws UnknownHostException {
 
+        // Lấy kích thước màn hình
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
         setBackground(new Color(204, 255, 255));
         setLayout(null);
-        setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setPreferredSize(screenSize);
 
         // Webcam Panel
         webcamPanel = new JPanel(new BorderLayout());
-        webcamPanel.setBounds(20, 20, WIDTH - 44, 631);
+        webcamPanel.setBounds(20, 20, screenWidth - 340, (int) (screenHeight * 0.8));
         webcamPanel.setBackground(new Color(229, 255, 255));
         camPanel = initWebcamPanel();
         webcamPanel.add(camPanel, BorderLayout.CENTER);
         add(webcamPanel);
 
-        // Other buttons and layout
+        // Nút bật/tắt chat
         btnChatToggle = createButton("chat.png", null);
         btnChatToggle.setBackground(Color.PINK);
-        btnChatToggle.setBounds(WIDTH - 109, 661, 70, 50);
+        btnChatToggle.setBounds(screenWidth - 100, (int) (screenHeight * 0.85), 70, 50);
         btnChatToggle.addActionListener(e -> toggleChatPanel());
         add(btnChatToggle);
 
+        // Nút kết thúc cuộc gọi
         btnEndCall = createButton("IconExit.png", null);
-        btnEndCall.setBounds(420, 661, 70, 50);
+        btnEndCall.setBounds((int) (screenWidth * 0.3), (int) (screenHeight * 0.85), 70, 50);
         btnEndCall.setBackground(new Color(255, 102, 102));
         btnEndCall.addActionListener(e -> exitVideoRoom());
         add(btnEndCall);
 
+        // Nút tắt tiếng
         btnMute = createButton("IconOnMic.png", "IconOffMic.png");
-        btnMute.setBounds(567, 661, 70, 50);
+        btnMute.setBounds((int) (screenWidth * 0.4), (int) (screenHeight * 0.85), 70, 50);
         btnMute.setBackground(new Color(102, 204, 255));
         btnMute.addActionListener(e -> toggleMute(btnMute));
         add(btnMute);
 
+        // Nút bật/tắt video
         btnToggleVideo = createButton("IconOnVideo.png", "IconOffVideo.png");
-        btnToggleVideo.setBounds(711, 661, 70, 50);
+        btnToggleVideo.setBounds((int) (screenWidth * 0.5), (int) (screenHeight * 0.85), 70, 50);
         btnToggleVideo.setBackground(new Color(153, 255, 204));
         btnToggleVideo.addActionListener(e -> toggleVideo(btnToggleVideo));
         add(btnToggleVideo);
 
+        // Thời gian hiển thị
         lblTime = new JLabel();
-        lblTime.setBounds(20, 651, 150, 30);
+        lblTime.setBounds(20, (int) (screenHeight * 0.85), 150, 30);
         lblTime.setFont(new Font("Tahoma", Font.BOLD, 14));
         add(lblTime);
 
+        // Mã phòng
         lblRoomCode = new JLabel("IP: " + InetAddress.getLocalHost().getHostAddress() + " - Port: " + port);
-        lblRoomCode.setBounds(20, 681, 300, 30);
+        lblRoomCode.setBounds(20, (int) (screenHeight * 0.88), 300, 30);
         lblRoomCode.setFont(new Font("Tahoma", Font.BOLD, 14));
         add(lblRoomCode);
 
         // Chat panel setup
         chatPanel = new JPanel(null);
         chatScrollPane = new JScrollPane(chatPanel);
-        chatScrollPane.setBounds(WIDTH - 337, 20, 313, 631);
+        chatScrollPane.setBounds(screenWidth - 320, 20, 300, (int) (screenHeight * 0.8));
         add(chatScrollPane);
 
         chatArea = new JTextArea();
-        chatArea.setBounds(0, 0, 293, 605);
+        chatArea.setBounds(0, 0, 280, (int) (screenHeight * 0.75));
         chatArea.setEditable(false);
         chatPanel.add(chatArea);
 
         chatInput = new JTextField();
-        chatInput.setBounds(0, 605, 233, 26);
+        chatInput.setBounds(0, (int) (screenHeight * 0.75), 230, 26);
         chatPanel.add(chatInput);
 
         btnSend = new JButton("Send");
-        btnSend.setBounds(240, 605, 71, 26);
+        btnSend.setBounds(240, (int) (screenHeight * 0.75), 60, 26);
         btnSend.setBackground(new Color(153, 204, 255));
         btnSend.setForeground(Color.WHITE);
         btnSend.addActionListener(e -> sendMessageToAll());
@@ -136,6 +146,7 @@ public class RoomMain extends JPanel {
         timer = new Timer(1000, e -> updateTime());
         timer.start();
     }
+
     private void setupNetworking() {
         new Thread(() -> {
             try {

@@ -11,14 +11,22 @@ public class RoomManager extends JPanel {
     private DefaultListModel<String> memberListModel;
 
     public RoomManager() {
+        // Lấy kích thước màn hình
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int screenWidth = screenSize.width;
+        int screenHeight = screenSize.height;
+
         setBackground(Color.LIGHT_GRAY);
         setLayout(new BorderLayout());
 
+        // Tiêu đề
         JLabel lblTitle = new JLabel("Room Manager", SwingConstants.CENTER);
         lblTitle.setBackground(Color.WHITE);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 24));
+        lblTitle.setOpaque(true); // Để áp dụng màu nền
         add(lblTitle, BorderLayout.NORTH);
 
+        // Danh sách thành viên
         memberListModel = new DefaultListModel<>();
         JList<String> memberList = new JList<>(memberListModel);
         memberList.setFont(new Font("Arial", Font.PLAIN, 18));
@@ -29,31 +37,37 @@ public class RoomManager extends JPanel {
         memberList.setCellRenderer(new MemberListCellRenderer());
 
         JScrollPane scrollPane = new JScrollPane(memberList);
-        scrollPane.setPreferredSize(new Dimension(400, 300));
+        scrollPane.setPreferredSize(new Dimension(screenWidth / 3, screenHeight / 3));
         scrollPane.setBorder(BorderFactory.createTitledBorder("Members List"));
         add(scrollPane, BorderLayout.CENTER);
 
-        // Sample members to display
+        // Thêm các thành viên mẫu
         addSampleMembers();
 
-        // Panel for member controls
+        // Panel cho các nút điều khiển
         JPanel controlPanel = new JPanel();
-        controlPanel.setLayout(new FlowLayout()); // Using FlowLayout to keep buttons in one line
+        controlPanel.setLayout(new GridLayout(1, 3, 20, 10)); // Sử dụng GridLayout với khoảng cách giữa các nút
 
+        // Nút Remove
         JButton btnRemove = createButton("Remove");
-        btnRemove.setPreferredSize(new Dimension(200, 60)); // Increased height and width
+        btnRemove.setPreferredSize(new Dimension(screenWidth / 10, screenHeight / 15)); // Tỷ lệ theo màn hình
         controlPanel.add(btnRemove);
 
+        // Nút Mute Mic
         JButton btnMute = createButton("Mute Mic");
-        btnMute.setPreferredSize(new Dimension(200, 60)); // Increased height and width
+        btnMute.setPreferredSize(new Dimension(screenWidth / 10, screenHeight / 15));
         controlPanel.add(btnMute);
 
+        // Nút Disable Camera
         JButton btnDisableCamera = createButton("Disable Camera");
-        btnDisableCamera.setPreferredSize(new Dimension(200, 60)); // Increased height and width
+        btnDisableCamera.setPreferredSize(new Dimension(screenWidth / 10, screenHeight / 15));
         controlPanel.add(btnDisableCamera);
-        
+
+        // Thêm panel điều khiển vào BorderLayout.SOUTH
+        controlPanel.setBorder(BorderFactory.createEmptyBorder(10, 20, 10, 20)); // Khoảng cách padding
         add(controlPanel, BorderLayout.SOUTH);
     }
+
 
     private JButton createButton(String text) {
         JButton button = new JButton(text);
