@@ -1,20 +1,19 @@
 
-package Client.tmpl;
-import Client.services.ClientThreadMeetSend;
+package Client.tmpl.Host;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.Socket;
 import java.util.Timer;
 
-public class RoomMeet extends JFrame {
-    private Socket socket ;
-	private String username ;
-	private int port;
+public class RoomMeetHost extends JFrame {
+    private Socket      socket ;
+	private String      username ;
+	private int         port;
 
-    private Timer time  ;
+    private Timer       time  ;
 
-  public RoomMeet (String username , int port) {
+  public RoomMeetHost(String username , int port ) {
 	try {
 	//	this.socket 		= socket ;
 		this.username 		= username ;
@@ -39,11 +38,11 @@ public class RoomMeet extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBackground(Color.WHITE);
 
-        RoomMain mainRoom = new RoomMain(port, username);
+        RoomMainHost mainRoom = new RoomMainHost(port, username);
         mainRoom.setBackground(Color.LIGHT_GRAY);
         tabbedPane.addTab("Main Room", mainRoom);
 
-        RoomManager roomManager = new RoomManager();
+        RoomManagerHost roomManager = new RoomManagerHost();
         roomManager.setBackground(Color.WHITE);
         tabbedPane.addTab("Room Manager", roomManager);
 

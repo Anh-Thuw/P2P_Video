@@ -10,6 +10,7 @@ CREATE TABLE users (
 CREATE TABLE meets (
                        meet_id INT AUTO_INCREMENT PRIMARY KEY,
                        host_user_id INT NOT NULL,
+                       host_ip_address VARCHAR(45) NOT NULL,
                        room_code VARCHAR(255) UNIQUE NOT NULL,
                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,

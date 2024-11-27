@@ -115,7 +115,6 @@ public class HostInterface extends JFrame {
                         }).start();
 
                         while (true) {
-
                             br = webcam.getImage();
                             icOut = new ImageIcon(br);
                             out.writeObject(icOut);

@@ -1,4 +1,6 @@
-package Client.tmpl;
+package Client.tmpl.Host;
+
+import Client.tmpl.Home;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 
@@ -15,11 +17,10 @@ import java.net.UnknownHostException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.List;
 
 
-public class RoomMain extends JPanel {
+public class RoomMainHost extends JPanel {
     private static final int WEBCAM_WIDTH = 640, WEBCAM_HEIGHT = 480;
 
     // UI Components
@@ -35,26 +36,25 @@ public class RoomMain extends JPanel {
     // Networking
     private ObjectInputStream    in;
     private ObjectOutputStream   out;
-    private ServerSocket         serverSocket;
+    private ServerSocket         serverSocket  ;
     private Socket               clientSocket;
-    private List<Socket>         connectedClients = new ArrayList<>();
     private WebcamPanel          camPanel;
-    private final List<ObjectOutputStream> clients = new CopyOnWriteArrayList<>();
-
-    // State Variables
-    private String               username ;
+    private String               username;
     private int                  port ;
     private boolean              isCameraOn = true;
     private boolean              isMicOn = true;
+    private  BufferedImage       frame ;
+    private  ImageIcon           imageIcon ;
+    private static List<Socket> clientSockets = new ArrayList<>();
 
 
-    public RoomMain (int port , String username) {
+
+    public RoomMainHost(int port , String username) {
         try {
             this.username 		= username ;
             this.port 		    = port ;
             Frame_RoomMain();
-            setupNetworking();
-
+            setupHost();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -137,7 +137,7 @@ public class RoomMain extends JPanel {
         btnSend.setBounds(240, (int) (screenHeight * 0.75), 60, 26);
         btnSend.setBackground(new Color(153, 204, 255));
         btnSend.setForeground(Color.WHITE);
-        btnSend.addActionListener(e -> sendMessageToAll());
+        btnSend.addActionListener(e -> sendChat());
         chatPanel.add(btnSend);
 
         chatPanel.setVisible(false);
@@ -146,76 +146,73 @@ public class RoomMain extends JPanel {
         timer.start();
     }
 
-    private void setupNetworking() {
+    private void setupHost() {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);
                 while (true) {
-                    Socket newClientSocket = serverSocket.accept();
-                    connectedClients.add(newClientSocket);
-                    out = new ObjectOutputStream(newClientSocket.getOutputStream());
-                    clients.add(out);
+                    clientSocket = serverSocket.accept();
+
+                    synchronized (clientSockets) {
+                        clientSockets.add(clientSocket);
+                    }
                     //video
-                    new Thread(() -> receiveVideo(newClientSocket)).start();
-                    new Thread(() -> sendVideoToClient(newClientSocket)).start();
+                    new Thread(() -> receiveVideo(clientSocket)).start();
+                    new Thread(() -> sendVideo(clientSocket)).start();
                     // chat
-                    new Thread(() -> handleClientMessages(newClientSocket)).start();
-
-
+                    new Thread(() -> receiveChat(clientSocket)).start();
+                  //  new Thread(() -> sendChat()).start();
+                    
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
     }
-
-    private void handleClientMessages(Socket clientSocket) {
+    private void receiveChat(Socket clientSocket) {
         try {
             in = new ObjectInputStream(clientSocket.getInputStream());
-            while (true) {
-                String message = (String) in.readObject();
-                broadcastMessage(message);
+            String message;
+            while ((message = in.readUTF()) != null) {
+                // Hiển thị tin nhắn trong giao diện của host
+                chatArea.append(message + "\n");
+
+                // Phát tán tin nhắn đến tất cả các client khác
+                synchronized (clientSockets) {
+                    for (Socket socket : clientSockets) {
+                        if (socket != clientSocket) { // Không gửi lại cho chính client đã gửi
+                            ObjectOutputStream tempOut = new ObjectOutputStream(socket.getOutputStream());
+                            tempOut.writeUTF(message);
+                            tempOut.flush();
+                        }
+                    }
+                }
             }
-        } catch (IOException | ClassNotFoundException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void sendMessageToAll() {
-        String message = chatInput.getText().trim();
-        if (!message.isEmpty()) {
-            try {
-                String formattedMessage = username + ": " + message;
 
-                // Send to server
-                out.writeObject(formattedMessage);
-                out.flush();
+    private void sendChat() {
+        try {
+            String message = username + ": " + chatInput.getText();
+            chatArea.append(message + "\n"); // Hiển thị tin nhắn trong giao diện của host
 
-                // Display in local chat area
-                chatArea.append("Me: " + message + "\n");
-                chatInput.setText("");
-
-                // Broadcast to other clients
-                broadcastMessage(formattedMessage);
-            } catch (IOException e) {
-                e.printStackTrace();
+            synchronized (clientSockets) {
+                for (Socket socket : clientSockets) {
+                    ObjectOutputStream tempOut = new ObjectOutputStream(socket.getOutputStream());
+                    tempOut.writeUTF(message);
+                    tempOut.flush();
+                }
             }
+            chatInput.setText(""); // Xóa nội dung sau khi gửi
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    private void broadcastMessage(String message) {
-        for (ObjectOutputStream clientOut : clients) {
-            try {
-                clientOut.writeObject(message);
-                clientOut.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
 
-        // Append message locally
-        chatArea.append(message + "\n");
-    }
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {
         try {
@@ -232,15 +229,14 @@ public class RoomMain extends JPanel {
         }
     }
 
-    private void sendVideoToClient(Socket clientSocket) {
+    private void sendVideo(Socket clientSocket) {
         try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
-            if (!webcam.isOpen()) webcam.open();
             while (isCameraOn) {
-                BufferedImage frame = webcam.getImage();
-                ImageIcon imageIcon = new ImageIcon(frame);
+                frame = webcam.getImage();
+                imageIcon = new ImageIcon(frame);
                 out.writeObject(imageIcon);
                 out.flush();
-                Thread.sleep(50); // Reduce frequency to ~20 FPS
+                Thread.sleep(50);
             }
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -274,8 +270,6 @@ public class RoomMain extends JPanel {
         revalidate();
         repaint();
     }
-
-
     private void toggleVideo(JButton buttonOnOffVideo){
         if (isCameraOn) {
             updateButtonIcon(buttonOnOffVideo, "IconOffVideo.png");
@@ -349,13 +343,7 @@ public class RoomMain extends JPanel {
                 webcam.close();
                 webcam = null;
             }
-            for (ObjectOutputStream client : clients) {
-                client.close();
-            }
-            clients.clear();
-            connectedClients.clear();
-
-         //   video.setIcon(null);
+            //   video.setIcon(null);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

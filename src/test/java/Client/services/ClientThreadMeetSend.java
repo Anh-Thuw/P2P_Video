@@ -13,15 +13,17 @@ public class ClientThreadMeetSend extends Thread{
 	
     private		String 				username ;
 	private		int 				port ;
+	private 	String 				ip ;
 	private 	String 				cmd;
 
 
 
-	public ClientThreadMeetSend(String cmd,Socket socket, String username , int port , JFrame jFrame) throws Exception {
+	public ClientThreadMeetSend(String cmd,Socket socket, String username , int port , String ip , JFrame jFrame) throws Exception {
 		this.cmd 				=	cmd ;
 		this.socket				= 	socket ; 
 		this.username			= 	username ;
 		this.port 				= 	port ;
+		this.ip 				= 	ip ;
 		this.jFrame 			= 	jFrame;
 		this.dos  				= 	new DataOutputStream(socket.getOutputStream());	}
 
@@ -53,7 +55,7 @@ public class ClientThreadMeetSend extends Thread{
 
 	}
 	public void doCreate(){
-		doSendData ("Call_Meet<?>Call_Meet_Create<?>" + port + "<?>" + username);
+		doSendData ("Call_Meet<?>Call_Meet_Create<?>" + port + "<?>"+ip+ "<?>" + username);
 	}
 	private void doJoin() {
 		doSendData ("Call_Meet<?>Call_Meet_Join<?>" + port + "<?>" + username);

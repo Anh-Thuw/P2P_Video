@@ -81,34 +81,32 @@ public class ServerThreadMeet extends Thread {
 
 	private void doMeetJoin(StringTokenizer cont) {
 		try {
-			// Lấy thông tin từ lệnh
-			String port = cont.nextToken(); // Room code
+			String port = cont.nextToken();
 			String username = cont.nextToken();
 
-			// Lấy user_id của người dùng dựa vào username
 			int userId = getId(username);
 			if (userId == -1) {
 				System.out.println("User not found: " + username);
 				return;
 			}
-
-			// Lấy meet_id dựa trên room_code (port)
-			String sqlGetMeetId = "SELECT meet_id FROM meets WHERE room_code = ?";
+			// Get meet_id from the meets table using room_code (port)
+			String sqlGetMeetId = "SELECT meet_id, host_ip_address FROM meets WHERE room_code = ?";
 			PreparedStatement psGetMeetId = connection.prepareStatement(sqlGetMeetId);
 			psGetMeetId.setString(1, port);
 			ResultSet rs = psGetMeetId.executeQuery();
 
 			int meetId = -1;
+			String hostIpAddress = null;
+
 			if (rs.next()) {
 				meetId = rs.getInt("meet_id");
+				hostIpAddress = rs.getString("host_ip_address");
 			}
 
 			if (meetId == -1) {
 				System.out.println("Meeting not found for room code: " + port);
 				return;
 			}
-
-			// Kiểm tra nếu người dùng đã tham gia phòng họp này trước đó
 			String sqlCheckParticipant = "SELECT id FROM meet_participants WHERE meet_id = ? AND user_id = ?";
 			PreparedStatement psCheckParticipant = connection.prepareStatement(sqlCheckParticipant);
 			psCheckParticipant.setInt(1, meetId);
@@ -121,15 +119,13 @@ public class ServerThreadMeet extends Thread {
 				return;
 			}
 
-			// Thêm người dùng vào bảng meet_participants
 			String sqlInsertParticipant = "INSERT INTO meet_participants (meet_id, user_id, joined_at) VALUES (?, ?, NOW())";
 			PreparedStatement psInsertParticipant = connection.prepareStatement(sqlInsertParticipant);
 			psInsertParticipant.setInt(1, meetId);
 			psInsertParticipant.setInt(2, userId);
 			psInsertParticipant.executeUpdate();
 
-			// Gửi xác nhận thành công về cho client
-			doSendData("Call_Meet<?>Call_Meet_Create_OK", username, port);
+			doSendData("Call_Meet<?>Call_Meet_Join_OK", username, port, hostIpAddress);
 			System.out.println("User " + username + " joined meeting successfully.");
 
 		} catch (Exception e) {
@@ -141,20 +137,19 @@ public class ServerThreadMeet extends Thread {
 	public void doMeetCreate(StringTokenizer cont) {
 		try {
 			String port = cont.nextToken();
+			String ip = cont.nextToken();
 			String username = cont.nextToken();
 
-			// Get user ID of the host
 			int userId = getId(username);
 			if (userId == -1) {
 				System.out.println("User not found: " + username);
 				return;
 			}
-
-			// Insert into meets table
-			String sqlInsertMeet = "INSERT INTO meets (host_user_id, room_code) VALUES (?, ?)";
+			String sqlInsertMeet = "INSERT INTO meets (host_user_id , host_ip_address, room_code ) VALUES (?, ? , ?)";
 			PreparedStatement psMeet = connection.prepareStatement(sqlInsertMeet, PreparedStatement.RETURN_GENERATED_KEYS);
 			psMeet.setInt(1, userId);
-			psMeet.setString(2, port); // Room code as String
+			psMeet.setString(2, ip);
+			psMeet.setString(3, port);
 			psMeet.executeUpdate();
 
 			// Retrieve generated meet_id
@@ -184,7 +179,6 @@ public class ServerThreadMeet extends Thread {
 			e.printStackTrace();
 		}
 	}
-
 	public int getId(String username) {
 		int userId = -1;
 		try {
