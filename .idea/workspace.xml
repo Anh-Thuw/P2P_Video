@@ -4,7 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="ip">
+    <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="chat">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Client/RoomMainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Client/RoomMainClient.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" afterDir="false" />
@@ -90,20 +90,7 @@
       <recent name="Client.tmpl" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Login (2)">
-    <configuration name="Connect (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
-      <module name="P2P_video_call" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="clientserver.tmpl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Application.Connect">
     <configuration name="Connect (2)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
       <module name="P2P_video_call" />
@@ -118,6 +105,19 @@
       </method>
     </configuration>
     <configuration name="Connect (3)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
+      <module name="P2P_video_call" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="clientserver.tmpl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Connect (4)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
       <module name="P2P_video_call" />
       <extension name="coverage">
@@ -183,19 +183,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Application.Connect (1)" />
       <item itemvalue="Application.Connect (2)" />
+      <item itemvalue="Application.Connect (4)" />
       <item itemvalue="Application.Connect" />
       <item itemvalue="Application.Login (2)" />
       <item itemvalue="Application.Connect (3)" />
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Connect" />
         <item itemvalue="Application.Login (2)" />
+        <item itemvalue="Application.Connect (4)" />
         <item itemvalue="Application.Connect (3)" />
         <item itemvalue="Application.Connect (2)" />
-        <item itemvalue="Application.Connect (1)" />
-        <item itemvalue="Application.Connect" />
       </list>
     </recent_temporary>
   </component>
@@ -226,7 +226,7 @@
       <workItem from="1732371685184" duration="12163000" />
       <workItem from="1732635866969" duration="3882000" />
       <workItem from="1732669166822" duration="18985000" />
-      <workItem from="1732690092639" duration="1539000" />
+      <workItem from="1732690092639" duration="4075000" />
     </task>
     <task id="LOCAL-00001" summary="è">
       <option name="closed" value="true" />
@@ -332,7 +332,15 @@
       <option name="project" value="LOCAL" />
       <updated>1732691151811</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="chat">
+      <option name="closed" value="true" />
+      <created>1732691691407</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1732691691407</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -357,8 +365,8 @@
     <MESSAGE value="meet" />
     <MESSAGE value="lib" />
     <MESSAGE value="set screen" />
-    <MESSAGE value="chat" />
     <MESSAGE value="ip" />
-    <option name="LAST_COMMIT_MESSAGE" value="ip" />
+    <MESSAGE value="chat" />
+    <option name="LAST_COMMIT_MESSAGE" value="chat" />
   </component>
 </project>

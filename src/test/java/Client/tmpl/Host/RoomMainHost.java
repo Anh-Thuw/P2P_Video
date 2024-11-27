@@ -7,9 +7,7 @@ import com.github.sarxos.webcam.WebcamPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,8 +32,10 @@ public class RoomMainHost extends JPanel {
     private Timer                timer;
     private Webcam               webcam;
     // Networking
-    private ObjectInputStream    in;
-    private ObjectOutputStream   out;
+    private ObjectInputStream    objectInputStream;
+    private ObjectOutputStream   objectOutputStream;
+    private DataOutputStream dataOutputStream ;
+    private DataInputStream dataInputStream ;
     private ServerSocket         serverSocket  ;
     private Socket               clientSocket;
     private WebcamPanel          camPanel;
@@ -160,8 +160,6 @@ public class RoomMainHost extends JPanel {
                     new Thread(() -> sendVideo(clientSocket)).start();
                     // chat
                     new Thread(() -> receiveChat(clientSocket)).start();
-                  //  new Thread(() -> sendChat()).start();
-                    
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -170,19 +168,16 @@ public class RoomMainHost extends JPanel {
     }
     private void receiveChat(Socket clientSocket) {
         try {
-            in = new ObjectInputStream(clientSocket.getInputStream());
+            dataInputStream = new DataInputStream(clientSocket.getInputStream());
             String message;
-            while ((message = in.readUTF()) != null) {
-                // Hiển thị tin nhắn trong giao diện của host
+            while ((message = dataInputStream.readUTF()) != null) {
                 chatArea.append(message + "\n");
-
-                // Phát tán tin nhắn đến tất cả các client khác
                 synchronized (clientSockets) {
                     for (Socket socket : clientSockets) {
-                        if (socket != clientSocket) { // Không gửi lại cho chính client đã gửi
-                            ObjectOutputStream tempOut = new ObjectOutputStream(socket.getOutputStream());
-                            tempOut.writeUTF(message);
-                            tempOut.flush();
+                        if (socket != clientSocket) {
+                            dataOutputStream = new DataOutputStream(socket.getOutputStream());
+                            dataOutputStream.writeUTF(message);
+                            dataOutputStream.flush();
                         }
                     }
                 }
@@ -196,13 +191,13 @@ public class RoomMainHost extends JPanel {
     private void sendChat() {
         try {
             String message = username + ": " + chatInput.getText();
-            chatArea.append(message + "\n"); // Hiển thị tin nhắn trong giao diện của host
+            chatArea.append(message + "\n");
 
             synchronized (clientSockets) {
                 for (Socket socket : clientSockets) {
-                    ObjectOutputStream tempOut = new ObjectOutputStream(socket.getOutputStream());
-                    tempOut.writeUTF(message);
-                    tempOut.flush();
+                    dataOutputStream  = new DataOutputStream(socket.getOutputStream());
+                    dataOutputStream.writeUTF(message);
+                    dataOutputStream.flush();
                 }
             }
             chatInput.setText(""); // Xóa nội dung sau khi gửi
@@ -215,9 +210,9 @@ public class RoomMainHost extends JPanel {
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {
         try {
-            in = new ObjectInputStream(clientSocket.getInputStream());
+            objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
             while (true) {
-                ImageIcon receivedImage = (ImageIcon) in.readObject();
+                ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
                 SwingUtilities.invokeLater(() -> {
                     JLabel videoLabel = new JLabel(receivedImage);
                     updateVideoDisplay(videoLabel);
@@ -327,15 +322,25 @@ public class RoomMainHost extends JPanel {
                 serverSocket = null;
             }
 
-            if (in != null) {
-                in.close();
-                in = null;
+            if (dataInputStream != null) {
+                dataInputStream.close();
+                dataInputStream = null;
             }
 
-            if (out != null) {
-                out.close();
-                out.flush();
-                out = null;
+            if (dataOutputStream != null) {
+                dataOutputStream.close();
+                dataOutputStream.flush();
+                dataOutputStream = null;
+            }
+            if (objectInputStream != null) {
+                objectInputStream.close();
+                objectInputStream = null;
+            }
+
+            if (objectOutputStream != null) {
+                objectOutputStream.close();
+                objectOutputStream.flush();
+                objectOutputStream = null;
             }
 
             if (webcam != null) {

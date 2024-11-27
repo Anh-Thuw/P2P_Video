@@ -7,9 +7,7 @@ import com.github.sarxos.webcam.WebcamPanel;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -34,8 +32,10 @@ public class RoomMainClient extends JPanel {
     private Timer                timer;
     private Webcam               webcam;
     // Networking
-    private ObjectInputStream   in;
-    private ObjectOutputStream out;
+    private ObjectInputStream    objectInputStream;
+    private ObjectOutputStream   objectOutputStream;
+    private DataOutputStream     dataOutputStream ;
+    private DataInputStream      dataInputStream ;
     private Socket               clientSocket;
     private WebcamPanel          camPanel;
     private String               username , ipHost;
@@ -158,10 +158,10 @@ public class RoomMainClient extends JPanel {
 
     private void receiveChat(Socket clientSocket) {
         try {
-            in = new ObjectInputStream(clientSocket.getInputStream());
+            dataInputStream = new DataInputStream(clientSocket.getInputStream());
             String message;
-            while ((message = in.readUTF()) != null) {
-                chatArea.append(message + "\n"); // Hiển thị tin nhắn
+            while ((message = dataInputStream.readUTF()) != null) {
+                chatArea.append(message + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -171,9 +171,9 @@ public class RoomMainClient extends JPanel {
     private void sendChat(Socket clientSocket) {
         try {
             String message = username + ": " + chatInput.getText();
-            out = new ObjectOutputStream(clientSocket.getOutputStream());
-            out.writeUTF(message);
-            out.flush();
+            dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+            dataOutputStream.writeUTF(message);
+            dataOutputStream.flush();
 
             chatArea.append(message + "\n"); // Hiển thị tin nhắn trong giao diện của client
             chatInput.setText(""); // Xóa nội dung sau khi gửi
@@ -185,9 +185,9 @@ public class RoomMainClient extends JPanel {
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {
         try {
-            in = new ObjectInputStream(clientSocket.getInputStream());
+            objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
             while (true) {
-                ImageIcon receivedImage = (ImageIcon) in.readObject();
+                ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
                 SwingUtilities.invokeLater(() -> {
                     videoLabel = new JLabel(receivedImage);
                     updateVideoDisplay(videoLabel);
@@ -200,7 +200,7 @@ public class RoomMainClient extends JPanel {
 
     private void sendVideo(Socket clientSocket) {
         try {
-            out = new ObjectOutputStream(clientSocket.getOutputStream());
+            objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
 
             webcam.open();
             isCameraOn = true;
@@ -209,8 +209,8 @@ public class RoomMainClient extends JPanel {
             while (true) {
                 frame = webcam.getImage();
                 ImageIcon imageIcon = new ImageIcon(frame);
-                out.writeObject(imageIcon);
-                out.flush();
+                objectOutputStream.writeObject(imageIcon);
+                objectOutputStream.flush();
                 System.out.println("outToHost");
             }
         } catch (IOException e) {
@@ -297,16 +297,25 @@ public class RoomMainClient extends JPanel {
                 clientSocket.close();
                 clientSocket = null;
             }
-
-            if (in != null) {
-                in.close();
-                in = null;
+            if (dataInputStream != null) {
+                dataInputStream.close();
+                dataInputStream = null;
             }
 
-            if (out != null) {
-                out.close();
-                out.flush();
-                out = null;
+            if (dataOutputStream != null) {
+                dataOutputStream.close();
+                dataOutputStream.flush();
+                dataOutputStream = null;
+            }
+            if (objectInputStream != null) {
+                objectInputStream.close();
+                objectInputStream = null;
+            }
+
+            if (objectOutputStream != null) {
+                objectOutputStream.close();
+                objectOutputStream.flush();
+                objectOutputStream = null;
             }
 
             if (webcam != null) {
