@@ -44,7 +44,6 @@ public class RoomMainHost extends JPanel {
     private boolean              isCameraOn = true;
     private boolean              isMicOn = true;
     private  BufferedImage       frame ;
-    private  ImageIcon           imageIcon ;
     private static List<Socket> clientSockets = new ArrayList<>();
 
 
@@ -233,7 +232,7 @@ public class RoomMainHost extends JPanel {
         try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
             while (isCameraOn) {
                 frame = webcam.getImage();
-                imageIcon = new ImageIcon(frame);
+                ImageIcon imageIcon = new ImageIcon(frame);
                 out.writeObject(imageIcon);
                 out.flush();
                 Thread.sleep(50);

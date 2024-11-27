@@ -43,7 +43,6 @@ public class RoomMainClient extends JPanel {
     private boolean              isCameraOn = true;
     private boolean              isMicOn = true;
     private  BufferedImage       frame ;
-    private  ImageIcon           imageIcon , receivedImage ;
     public RoomMainClient(int port , String username , String ipHost) {
         try {
             this.username 		= username ;
@@ -188,7 +187,7 @@ public class RoomMainClient extends JPanel {
         try {
             in = new ObjectInputStream(clientSocket.getInputStream());
             while (true) {
-                receivedImage = (ImageIcon) in.readObject();
+                ImageIcon receivedImage = (ImageIcon) in.readObject();
                 SwingUtilities.invokeLater(() -> {
                     videoLabel = new JLabel(receivedImage);
                     updateVideoDisplay(videoLabel);
@@ -209,7 +208,7 @@ public class RoomMainClient extends JPanel {
 
             while (true) {
                 frame = webcam.getImage();
-                imageIcon = new ImageIcon(frame);
+                ImageIcon imageIcon = new ImageIcon(frame);
                 out.writeObject(imageIcon);
                 out.flush();
                 System.out.println("outToHost");
