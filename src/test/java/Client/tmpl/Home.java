@@ -100,8 +100,9 @@ public class Home extends JFrame {
             } else {
                 try {
                     int port = Integer.parseInt(portText);
+                    String ip = socket.getInetAddress().getHostAddress();
 
-                    ClientThreadMeetSend clientThreadMeetSend = new ClientThreadMeetSend("join",socket , username , port ,  this );
+                    ClientThreadMeetSend clientThreadMeetSend = new ClientThreadMeetSend("join",socket , username , port , ip, this );
                     clientThreadMeetSend.start();
 
                 } catch (NumberFormatException ex) {
@@ -126,13 +127,4 @@ public class Home extends JFrame {
         lblFooter.setBounds(320, 380, 200, 20);
         contentPane.add(lblFooter);
     }
-//    public void doCreateMeet() {
-//		try {
-//	    	ClientThreadMeetSend meetsend = new ClientThreadMeetSend(socket, username , this);
-//	    	meetsend.doMeet(username);
-//
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//	}
 }
