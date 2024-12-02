@@ -145,10 +145,10 @@ public class RoomMainMember extends JPanel {
     private void setupClient() {
         new Thread(() -> {
             try {
-                Socket clientSocket = new Socket( ipHost , port);
+                clientSocket = new Socket( ipHost , port);
                 //video
-                new Thread(() -> receiveVideo(clientSocket)).start();
-                new Thread(() -> sendVideo(clientSocket)).start();
+//                new Thread(() -> receiveVideo(clientSocket)).start();
+//                new Thread(() -> sendVideo(clientSocket)).start();
                 // chat
                 new Thread(() -> receiveChat(clientSocket)).start();
             } catch (IOException e) {
@@ -180,10 +180,6 @@ public class RoomMainMember extends JPanel {
 
     private void sendChat() {
         try {
-            if (clientSocket == null || clientSocket.isClosed()) {
-                JOptionPane.showMessageDialog(this, "Kết nối chưa được thiết lập. Vui lòng thử lại.");
-                return;
-            }
             String inputText = chatInput.getText().trim();
             if (inputText.isEmpty()) return;
 

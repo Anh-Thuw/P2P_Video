@@ -168,18 +168,21 @@ public class RoomMainHost extends JPanel {
     private void receiveChat(Socket clientSocket) {
         try (DataInputStream input = new DataInputStream(clientSocket.getInputStream())) {
             String message;
-            while ((message = input.readUTF()) != null) {
+            while ((message = input.readUTF()) != null && !message.trim().isEmpty()) {
                 chatArea.append(message + "\n");
                 synchronized (clientSockets) {
                     for (Socket socket : clientSockets) {
                         if (socket != clientSocket) {
                             try (DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
                                 output.writeUTF(message);
+                            } catch (IOException ex) {
+                                ex.printStackTrace();
                             }
                         }
                     }
                 }
             }
+
         } catch (IOException e) {
             synchronized (clientSockets) {
                 clientSockets.remove(clientSocket);
