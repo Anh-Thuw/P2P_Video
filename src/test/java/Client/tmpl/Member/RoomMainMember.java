@@ -146,36 +146,32 @@ public class RoomMainMember extends JPanel {
         new Thread(() -> {
             try {
                 clientSocket = new Socket( ipHost , port);
+
+                dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+                dataInputStream = new DataInputStream(clientSocket.getInputStream());
+
                 //video
 //                new Thread(() -> receiveVideo(clientSocket)).start();
 //                new Thread(() -> sendVideo(clientSocket)).start();
                 // chat
-                new Thread(() -> receiveChat(clientSocket)).start();
+                new Thread(() -> receiveChat()).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
     }
 
-    private void receiveChat(Socket clientSocket) {
+    private void receiveChat() {
         try {
-            DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
             String message;
-            while (true) {
-                try {
-                    message = dataInputStream.readUTF();
-                    chatArea.append(message + "\n");
-                } catch (EOFException e) {
-                    break;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    break;
-                }
+            while ((message = dataInputStream.readUTF()) != null) {
+                chatArea.append(message + "\n");
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Connection lost: " + e.getMessage());
         }
     }
+
 
 
     private void sendChat() {
@@ -184,9 +180,8 @@ public class RoomMainMember extends JPanel {
             if (inputText.isEmpty()) return;
 
             String message = username + ": " + inputText;
-            DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
-            out.writeUTF(message);
-            out.flush();
+            dataOutputStream.writeUTF(message);
+            dataOutputStream.flush();
 
             chatArea.append(message + "\n");
             chatInput.setText("");
