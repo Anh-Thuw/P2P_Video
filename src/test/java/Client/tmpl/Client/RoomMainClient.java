@@ -170,17 +170,21 @@ public class RoomMainClient extends JPanel {
 
     private void sendChat(Socket clientSocket) {
         try {
-            String message = username + ": " + chatInput.getText();
-            dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-            dataOutputStream.writeUTF(message);
-            dataOutputStream.flush();
+            String inputText = chatInput.getText().trim();
+            if (inputText.isEmpty()) return;
 
-            chatArea.append(message + "\n"); // Hiển thị tin nhắn trong giao diện của client
-            chatInput.setText(""); // Xóa nội dung sau khi gửi
+            String message = username + ": " + inputText;
+            DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+            out.writeUTF(message);
+            out.flush();
+
+            chatArea.append(message + "\n");
+            chatInput.setText("");
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {

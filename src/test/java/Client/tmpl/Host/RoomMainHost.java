@@ -5,6 +5,7 @@ import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
@@ -14,7 +15,7 @@ import java.net.Socket;
 import java.net.UnknownHostException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
 
@@ -41,10 +42,13 @@ public class RoomMainHost extends JPanel {
     private WebcamPanel          camPanel;
     private String               username;
     private int                  port ;
-    private boolean              isCameraOn = true;
+    private boolean              isCameraOn = false;
     private boolean              isMicOn = true;
     private  BufferedImage       frame ;
-    private static List<Socket> clientSockets = new ArrayList<>();
+    private List<Socket> clientSockets = Collections.synchronizedList(new ArrayList<>());
+
+    private static Map<Socket, DataOutputStream> clientStreams = new HashMap<>();
+
 
 
 
@@ -183,6 +187,9 @@ public class RoomMainHost extends JPanel {
                 }
             }
         } catch (IOException e) {
+            synchronized (clientSockets) {
+                clientSockets.remove(clientSocket);
+            }
             e.printStackTrace();
         }
     }
@@ -195,12 +202,12 @@ public class RoomMainHost extends JPanel {
 
             synchronized (clientSockets) {
                 for (Socket socket : clientSockets) {
-                    dataOutputStream  = new DataOutputStream(socket.getOutputStream());
-                    dataOutputStream.writeUTF(message);
-                    dataOutputStream.flush();
+                    DataOutputStream out = new DataOutputStream(socket.getOutputStream());
+                    out.writeUTF(message);
+                    out.flush();
                 }
             }
-            chatInput.setText(""); // Xóa nội dung sau khi gửi
+            chatInput.setText("");
         } catch (IOException e) {
             e.printStackTrace();
         }
