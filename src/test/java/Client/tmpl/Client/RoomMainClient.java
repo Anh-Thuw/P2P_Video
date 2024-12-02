@@ -132,7 +132,7 @@ public class RoomMainClient extends JPanel {
         btnSend.setBounds(240, (int) (screenHeight * 0.75), 60, 26);
         btnSend.setBackground(new Color(153, 204, 255));
         btnSend.setForeground(Color.WHITE);
-        btnSend.addActionListener(e -> sendChat(clientSocket));
+        btnSend.addActionListener(e -> sendChat());
 
         chatPanel.add(btnSend);
 
@@ -169,7 +169,7 @@ public class RoomMainClient extends JPanel {
         }
     }
 
-    private void sendChat(Socket clientSocket) {
+    private void sendChat() {
         try {
             String inputText = chatInput.getText().trim();
             if (inputText.isEmpty()) return;
