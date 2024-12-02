@@ -48,8 +48,8 @@ public class RoomMainClient extends JPanel {
             this.username 		= username ;
             this.port 		    = port ;
             this.ipHost         = ipHost ;
-            Frame_RoomMain();
             setupClient();
+            Frame_RoomMain();
         } catch (Exception e) {
             e.printStackTrace();
         }
