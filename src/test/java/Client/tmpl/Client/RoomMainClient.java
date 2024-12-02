@@ -159,7 +159,7 @@ public class RoomMainClient extends JPanel {
 
     private void receiveChat(Socket clientSocket) {
         try {
-            dataInputStream = new DataInputStream(clientSocket.getInputStream());
+            DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
             String message;
             while ((message = dataInputStream.readUTF()) != null) {
                 chatArea.append(message + "\n");

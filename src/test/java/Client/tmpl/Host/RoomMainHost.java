@@ -171,17 +171,16 @@ public class RoomMainHost extends JPanel {
         }).start();
     }
     private void receiveChat(Socket clientSocket) {
-        try {
-            dataInputStream = new DataInputStream(clientSocket.getInputStream());
+        try (DataInputStream input = new DataInputStream(clientSocket.getInputStream())) {
             String message;
-            while ((message = dataInputStream.readUTF()) != null) {
+            while ((message = input.readUTF()) != null) {
                 chatArea.append(message + "\n");
                 synchronized (clientSockets) {
                     for (Socket socket : clientSockets) {
                         if (socket != clientSocket) {
-                            dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                            dataOutputStream.writeUTF(message);
-                            dataOutputStream.flush();
+                            try (DataOutputStream output = new DataOutputStream(socket.getOutputStream())) {
+                                output.writeUTF(message);
+                            }
                         }
                     }
                 }
@@ -195,16 +194,16 @@ public class RoomMainHost extends JPanel {
     }
 
 
+
     private void sendChat() {
         try {
             String message = username + ": " + chatInput.getText();
             chatArea.append(message + "\n");
-
             synchronized (clientSockets) {
                 for (Socket socket : clientSockets) {
-                    DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-                    out.writeUTF(message);
-                    out.flush();
+                    try (DataOutputStream out = new DataOutputStream(socket.getOutputStream())) {
+                        out.writeUTF(message);
+                    }
                 }
             }
             chatInput.setText("");
@@ -252,9 +251,15 @@ public class RoomMainHost extends JPanel {
     }
     private WebcamPanel initWebcamPanel() {
         webcam = Webcam.getDefault();
-        webcam.setViewSize(new Dimension(WEBCAM_WIDTH, WEBCAM_HEIGHT));
-        return new WebcamPanel(webcam);
+        if (webcam != null) {
+            webcam.setViewSize(new Dimension(WEBCAM_WIDTH, WEBCAM_HEIGHT));
+            return new WebcamPanel(webcam);
+        } else {
+            JOptionPane.showMessageDialog(null, "Webcam not detected!");
+            return new WebcamPanel(Webcam.getDefault()); // Hoặc tạo một webcam panel mặc định.
+        }
     }
+
 
     private void toggleChatPanel() {
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
