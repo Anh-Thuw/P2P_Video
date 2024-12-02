@@ -44,6 +44,11 @@ public class RoomMainMember extends JPanel {
             this.username 		= username ;
             this.port 		    = port ;
             this.ipHost         = ipHost ;
+            webcam = Webcam.getDefault();  // Lấy webcam mặc định
+            if (webcam == null) {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy webcam");
+                return; // Nếu không có webcam, thoát khỏi hàm
+            }
             setupClient();
             Frame_RoomMain();
         } catch (Exception e) {
@@ -213,13 +218,21 @@ public class RoomMainMember extends JPanel {
 
     private void sendVideo(Socket clientSocket) {
         try {
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+            // Kiểm tra nếu webcam chưa được khởi tạo
+            if (webcam == null) {
+                JOptionPane.showMessageDialog(this, "Webcam chưa được khởi tạo");
+                return;
+            }
 
+            // Mở webcam
             webcam.open();
             isCameraOn = true;
             isMicOn = true;
 
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+
             while (true) {
+                // Lấy ảnh từ webcam và truyền đi
                 frame = webcam.getImage();
                 ImageIcon imageIcon = new ImageIcon(frame);
                 objectOutputStream.writeObject(imageIcon);
@@ -230,6 +243,7 @@ public class RoomMainMember extends JPanel {
             e.printStackTrace();
         }
     }
+
     // Cập nhật hiển thị video nhận được
     private void updateVideoDisplay(JLabel videoLabel) {
         webcamPanel.removeAll();

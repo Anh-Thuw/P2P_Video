@@ -6,11 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="chat">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Client/services/ClientThreadMeetReceive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/services/ClientThreadMeetReceive.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMeetHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMeetHost.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMeetMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMeetMember.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,7 +55,7 @@
     "Application.Login (1).executor": "Run",
     "Application.Login (2).executor": "Run",
     "Application.Login (3).executor": "Run",
-    "Application.Login.executor": "Debug",
+    "Application.Login.executor": "Run",
     "Application.MainInterface (1).executor": "Run",
     "Application.MainInterface (2).executor": "Run",
     "Application.MainInterface.executor": "Run",
@@ -215,7 +211,7 @@
       <workItem from="1732690092639" duration="9521000" />
       <workItem from="1732805814608" duration="1055000" />
       <workItem from="1732852884932" duration="1761000" />
-      <workItem from="1733102368507" duration="15488000" />
+      <workItem from="1733102368507" duration="16258000" />
     </task>
     <task id="LOCAL-00001" summary="è">
       <option name="closed" value="true" />
@@ -393,7 +389,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733116126571</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="chat">
+      <option name="closed" value="true" />
+      <created>1733118093999</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1733118093999</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -427,17 +431,17 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>142</line>
+          <line>147</line>
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>46</line>
+          <line>51</line>
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>184</line>
+          <line>189</line>
           <option name="timeStamp" value="5" />
         </line-breakpoint>
       </breakpoints>
