@@ -156,8 +156,8 @@ public class RoomMainHost extends JPanel {
                     clientSockets.add(clientSocket);
                 }
                 //video
-                new Thread(() -> receiveVideo(clientSocket)).start();
-                new Thread(() -> sendVideo(clientSocket)).start();
+//                new Thread(() -> receiveVideo(clientSocket)).start();
+//                new Thread(() -> sendVideo(clientSocket)).start();
                 // chat
                 new Thread(() -> receiveChat(clientSocket)).start();
             } catch (IOException e) {
