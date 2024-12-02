@@ -62,12 +62,12 @@ public class RoomMainHost extends JPanel {
         setPreferredSize(screenSize);
 
         // Webcam Panel
-        webcamPanel = new JPanel(new BorderLayout());
-        webcamPanel.setBounds(20, 20, screenWidth - 340, (int) (screenHeight * 0.8));
-        webcamPanel.setBackground(new Color(229, 255, 255));
-        camPanel = initWebcamPanel();
-        webcamPanel.add(camPanel, BorderLayout.CENTER);
-        add(webcamPanel);
+//        webcamPanel = new JPanel(new BorderLayout());
+//        webcamPanel.setBounds(20, 20, screenWidth - 340, (int) (screenHeight * 0.8));
+//        webcamPanel.setBackground(new Color(229, 255, 255));
+//        camPanel = initWebcamPanel();
+//        webcamPanel.add(camPanel, BorderLayout.CENTER);
+//        add(webcamPanel);
 
         // Nút bật/tắt chat
         btnChatToggle = createButton("chat.png", null);
@@ -146,17 +146,17 @@ public class RoomMainHost extends JPanel {
                 multicastSocket = new MulticastSocket(port);
                 multicastSocket.joinGroup(groupAddress);
 
-                new Thread(() -> {
-                    try {
-                        while (true) {
-                            if (isCameraOn) {
-                                sendVideo(groupAddress);
-                            }
-                        }
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }).start();
+//                new Thread(() -> {
+//                    try {
+//                        while (true) {
+//                            if (isCameraOn) {
+//                                sendVideo(groupAddress);
+//                            }
+//                        }
+//                    } catch (IOException | InterruptedException e) {
+//                        e.printStackTrace();
+//                    }
+//                }).start();
                 new Thread(() -> receiveData()).start();
             } catch (IOException e) {
                 e.printStackTrace();
