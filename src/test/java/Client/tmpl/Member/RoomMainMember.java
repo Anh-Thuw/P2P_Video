@@ -147,16 +147,14 @@ public class RoomMainMember extends JPanel {
             try {
                 clientSocket = new Socket( ipHost , port);
 
+                objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+                objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+
                 dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
                 dataInputStream = new DataInputStream(clientSocket.getInputStream());
-
-                objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
-                objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-
-
                 //video
-                new Thread(() -> receiveVideo(clientSocket)).start();
                 new Thread(() -> sendVideo(clientSocket)).start();
+                new Thread(() -> receiveVideo(clientSocket)).start();
                 // chat
                 new Thread(() -> receiveChat()).start();
             } catch (IOException e) {
@@ -167,12 +165,13 @@ public class RoomMainMember extends JPanel {
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+            System.out.println("da vao nhan video");
             while (true) {
                 ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
                 SwingUtilities.invokeLater(() -> {
                     videoLabel = new JLabel(receivedImage);
                     updateVideoDisplay(videoLabel);
+                    System.out.println("hmmmmmmmmmmmmmmmmm");
                 });
             }
         } catch (IOException | ClassNotFoundException e) {
@@ -182,16 +181,15 @@ public class RoomMainMember extends JPanel {
 
     private void sendVideo(Socket clientSocket) {
         try {
-            // Kiểm tra nếu webcam chưa được khởi tạo
             if (webcam == null) {
                 JOptionPane.showMessageDialog(this, "Webcam chưa được khởi tạo");
                 return;
             }
+            System.out.println("da vao gui video");
             // Mở webcam
             webcam.open();
             isCameraOn = true;
             isMicOn = true;
-            ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
             while (true) {
                 // Lấy ảnh từ webcam và truyền đi
                 frame = webcam.getImage();

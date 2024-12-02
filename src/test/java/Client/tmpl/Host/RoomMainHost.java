@@ -158,8 +158,8 @@ public class RoomMainHost extends JPanel {
                 objectOutputStream  = new ObjectOutputStream(clientSocket.getOutputStream());
 
                 //video
-                new Thread(() -> receiveVideo(clientSocket)).start();
                 new Thread(() -> sendVideo(clientSocket)).start();
+                new Thread(() -> receiveVideo(clientSocket)).start();
                 // chat
                 new Thread(() -> receiveChat(clientSocket)).start();
             } catch (IOException e) {
