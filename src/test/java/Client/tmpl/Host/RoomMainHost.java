@@ -56,8 +56,8 @@ public class RoomMainHost extends JPanel {
         try {
             this.username 		= username ;
             this.port 		    = port ;
-            Frame_RoomMain();
             setupHost();
+            Frame_RoomMain();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -154,7 +154,8 @@ public class RoomMainHost extends JPanel {
             try {
                 serverSocket = new ServerSocket(port);
                 while (true) {
-                    Socket  clientSocket = serverSocket.accept();
+                    clientSocket = serverSocket.accept();
+                    System.out.println("Client connected: " + clientSocket);
 
                     synchronized (clientSockets) {
                         clientSockets.add(clientSocket);

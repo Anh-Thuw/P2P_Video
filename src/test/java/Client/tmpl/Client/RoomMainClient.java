@@ -108,7 +108,7 @@ public class RoomMainClient extends JPanel {
         add(lblTime);
 
         // Mã phòng
-        lblRoomCode = new JLabel("IP: " + InetAddress.getLocalHost().getHostAddress() + " - Port: " + port);
+        lblRoomCode = new JLabel("IP: " + ipHost + " - Port: " + port);
         lblRoomCode.setBounds(20, (int) (screenHeight * 0.88), 300, 30);
         lblRoomCode.setFont(new Font("Tahoma", Font.BOLD, 14));
         add(lblRoomCode);
@@ -145,6 +145,10 @@ public class RoomMainClient extends JPanel {
         new Thread(() -> {
             try {
                 clientSocket = new Socket( ipHost , port);
+                if (clientSocket == null || clientSocket.isClosed()) {
+                    JOptionPane.showMessageDialog(this, "Kết nối chưa được thiết lập. Vui lòng thử lại.");
+                    return;
+                }
 
                 //video
                 new Thread(() -> receiveVideo(clientSocket)).start();
@@ -171,6 +175,10 @@ public class RoomMainClient extends JPanel {
 
     private void sendChat() {
         try {
+            if (clientSocket == null || clientSocket.isClosed()) {
+                JOptionPane.showMessageDialog(this, "Kết nối chưa được thiết lập. Vui lòng thử lại.");
+                return;
+            }
             String inputText = chatInput.getText().trim();
             if (inputText.isEmpty()) return;
 
