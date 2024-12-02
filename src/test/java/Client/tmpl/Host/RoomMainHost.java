@@ -4,19 +4,16 @@ import Client.tmpl.Home;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.Timer;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.List;
 
 
 public class RoomMainHost extends JPanel {
@@ -33,19 +30,16 @@ public class RoomMainHost extends JPanel {
     private Timer                timer;
     private Webcam               webcam;
     // Networking
-    private ObjectInputStream    objectInputStream;
-    private ObjectOutputStream   objectOutputStream;
-    private DataOutputStream dataOutputStream ;
-    private DataInputStream dataInputStream ;
-    private ServerSocket         serverSocket  ;
-    private Socket               clientSocket;
     private WebcamPanel          camPanel;
     private String               username;
     private int                  port ;
     private boolean              isCameraOn = false;
     private boolean              isMicOn = true;
     private  BufferedImage       frame ;
-    private List<Socket> clientSockets = Collections.synchronizedList(new ArrayList<>());
+    public static final byte[]   BUFFER = new byte[4096];
+    private DatagramPacket       sendPacket, receivePacket;
+    static  MulticastSocket     multicastSocket = null;
+    private InetAddress         groupAddress ;
     public RoomMainHost(int port , String username) {
         try {
             this.username 		= username ;
@@ -146,81 +140,69 @@ public class RoomMainHost extends JPanel {
     private void setupHost() {
         new Thread(() -> {
             try {
-                serverSocket = new ServerSocket(port);
-                clientSocket = serverSocket.accept();
+                //địa chỉ của nhóm họp
+                groupAddress = InetAddress.getLocalHost();
 
-                clientSockets.add(clientSocket);
+                multicastSocket = new MulticastSocket(port);
+                multicastSocket.joinGroup(groupAddress);
 
-                dataOutputStream    = new DataOutputStream(clientSocket.getOutputStream());
-                dataInputStream     = new DataInputStream(clientSocket.getInputStream());
-
-                objectInputStream   = new ObjectInputStream(clientSocket.getInputStream());
-                objectOutputStream  = new ObjectOutputStream(clientSocket.getOutputStream());
-
-                //video
-                new Thread(() -> sendVideo(clientSocket)).start();
-                new Thread(() -> receiveVideo(clientSocket)).start();
-                // chat
-                new Thread(() -> receiveChat(clientSocket)).start();
+                new Thread(() -> {
+                    try {
+                        while (true) {
+                            if (isCameraOn) {
+                                sendVideo(groupAddress);
+                            }
+                        }
+                    } catch (IOException | InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }).start();
+                new Thread(() -> receiveData()).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
     }
-    // Nhận video từ các client khác
-    private void receiveVideo(Socket clientSocket) {
+    private void sendVideo(InetAddress groupAddress) throws IOException, InterruptedException {
+        frame = webcam.getImage();
+        while (frame != null) {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ImageIO.write(frame, "jpg", baos);
+            byte[] frameData = baos.toByteArray();
+
+            sendPacket = new DatagramPacket(frameData, frameData.length, groupAddress, port);
+            multicastSocket.send(sendPacket); // Gửi gói video
+            Thread.sleep(50);
+        }
+    }
+    private void receiveData() {
         try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+            byte[] buffer = new byte[BUFFER.length];
             while (true) {
-                ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
-                SwingUtilities.invokeLater(() -> {
-                    JLabel videoLabel = new JLabel(receivedImage);
-                    updateVideoDisplay(videoLabel);
-                });
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-    private void sendVideo(Socket clientSocket) {
-        try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
-            while (isCameraOn) {
-                frame = webcam.getImage();
-                ImageIcon imageIcon = new ImageIcon(frame);
-                out.writeObject(imageIcon);
-                out.flush();
-                Thread.sleep(50);
-            }
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-    }
-    private void receiveChat(Socket clientSocket) {
-        try {
-            String message;
-            while ((message = dataInputStream.readUTF()) != null) {
-                for (Socket socket : clientSockets) {
-                    if (socket != clientSocket) {
-                        new DataOutputStream(socket.getOutputStream()).writeUTF(message);
-                    }
+                DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
+                multicastSocket.receive(receivePacket);
+
+                String senderData = new String(receivePacket.getData(), 0, receivePacket.getLength());
+                if (senderData.startsWith("CHAT:")) {
+                    chatArea.append(senderData.substring(5) + "\n");
+                } else {
+                    ByteArrayInputStream bais = new ByteArrayInputStream(receivePacket.getData());
+                    BufferedImage receivedFrame = ImageIO.read(bais);
+                    updateVideoDisplay(new JLabel(new ImageIcon(receivedFrame)));
                 }
-                chatArea.append(message + "\n");
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
-
     private void sendChat() {
         try {
-            String inputText = chatInput.getText().trim();
-            if (inputText.isEmpty()) return;
+            String message = "CHAT:" + username + ": " + chatInput.getText().trim();
+            byte[] messageData = message.getBytes();
 
-            String message = username + ": " + inputText;
-            for (Socket socket : clientSockets) {
-                new DataOutputStream(socket.getOutputStream()).writeUTF(message);
-            }
-            chatArea.append(message + "\n");
+            sendPacket = new DatagramPacket(messageData, messageData.length, groupAddress, port);
+            multicastSocket.send(sendPacket);
+            chatArea.append(username + ": " + chatInput.getText().trim() + "\n");
             chatInput.setText("");
         } catch (IOException e) {
             e.printStackTrace();
@@ -306,52 +288,29 @@ public class RoomMainHost extends JPanel {
 
     private void exitVideoRoom() {
         try {
-//        sendData = false; // Stop receiving data
+            String exitMessage = username + " đã rời khỏi phòng.";
+            byte[] exitBuffer = exitMessage.getBytes();
+            sendPacket = new DatagramPacket(exitBuffer, exitBuffer.length, groupAddress, port);
+            multicastSocket.send(sendPacket);
 
-            if (clientSocket != null) {
-                clientSocket.close();
-                clientSocket = null;
+            if (multicastSocket != null) {
+                multicastSocket.leaveGroup(groupAddress);
+                multicastSocket.close();
             }
-
-            if (serverSocket != null) {
-                serverSocket.close();
-                serverSocket = null;
-            }
-
-            if (dataInputStream != null) {
-                dataInputStream.close();
-                dataInputStream = null;
-            }
-
-            if (dataOutputStream != null) {
-                dataOutputStream.close();
-                dataOutputStream.flush();
-                dataOutputStream = null;
-            }
-            if (objectInputStream != null) {
-                objectInputStream.close();
-                objectInputStream = null;
-            }
-
-            if (objectOutputStream != null) {
-                objectOutputStream.close();
-                objectOutputStream.flush();
-                objectOutputStream = null;
-            }
-
-            if (webcam != null) {
+            if (webcam != null && webcam.isOpen()) {
                 webcam.close();
-                webcam = null;
             }
-            //   video.setIcon(null);
+            if (timer != null) {
+                timer.stop();
+            }
+            SwingUtilities.getWindowAncestor(this).dispose();
+            System.out.println("Đã rời khỏi phòng họp và đóng tài nguyên.");
         } catch (IOException e) {
             e.printStackTrace();
-        } finally {
-            Home main = new Home(null , username);
-            main.setVisible(true);
-            setVisible(false);
+            JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi thoát khỏi phòng họp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
     }
+
     private void updateTime() {
         lblTime.setText(LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm:ss")));
     }
