@@ -152,54 +152,46 @@ public class RoomMainHost extends JPanel {
                 clientSocket = serverSocket.accept();
                 System.out.println("Client connected: " + clientSocket);
 
-                synchronized (clientSockets) {
-                    clientSockets.add(clientSocket);
-                }
+                clientSockets.add(clientSocket);
+
+                dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+                dataInputStream = new DataInputStream(clientSocket.getInputStream());
                 //video
 //                new Thread(() -> receiveVideo(clientSocket)).start();
 //                new Thread(() -> sendVideo(clientSocket)).start();
                 // chat
-                new Thread(() -> receiveChat()).start();
+                new Thread(() -> receiveChat(clientSocket)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
     }
-    private void receiveChat() {
+    private void receiveChat(Socket clientSocket) {
         try {
             String message;
-            DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
-            message = dataInputStream.readUTF();
-            chatArea.append(message + "\n");
-
-            while (true) {
-                for (Socket clientSocket : clientSockets) {
-                    try {
-                        DataOutputStream dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-                        dataOutputStream.writeUTF(message);
-                        dataOutputStream.flush();
-                    } catch (IOException e) {
-                        System.err.println("Failed to broadcast message: " + e.getMessage());
+            while ((message = dataInputStream.readUTF()) != null) {
+                for (Socket socket : clientSockets) {
+                    if (socket != clientSocket) {
+                        new DataOutputStream(socket.getOutputStream()).writeUTF(message);
                     }
                 }
+                chatArea.append(message + "\n");
             }
-
         } catch (IOException e) {
-            System.err.println("Error receiving message: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
     private void sendChat() {
         try {
-            String message = username + ": " + chatInput.getText();
-            chatArea.append(message + "\n");
-            synchronized (clientSockets) {
-                for (Socket socket : clientSockets) {
-                    try (DataOutputStream out = new DataOutputStream(socket.getOutputStream())) {
-                        out.writeUTF(message);
-                    }
-                }
+            String inputText = chatInput.getText().trim();
+            if (inputText.isEmpty()) return;
+
+            String message = username + ": " + inputText;
+            for (Socket socket : clientSockets) {
+                new DataOutputStream(socket.getOutputStream()).writeUTF(message);
             }
+            chatArea.append(message + "\n");
             chatInput.setText("");
         } catch (IOException e) {
             e.printStackTrace();
