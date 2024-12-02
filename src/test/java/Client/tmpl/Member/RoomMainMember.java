@@ -150,9 +150,13 @@ public class RoomMainMember extends JPanel {
                 dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
                 dataInputStream = new DataInputStream(clientSocket.getInputStream());
 
+                objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+                objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+
+
                 //video
-//                new Thread(() -> receiveVideo(clientSocket)).start();
-//                new Thread(() -> sendVideo(clientSocket)).start();
+                new Thread(() -> receiveVideo(clientSocket)).start();
+                new Thread(() -> sendVideo(clientSocket)).start();
                 // chat
                 new Thread(() -> receiveChat()).start();
             } catch (IOException e) {

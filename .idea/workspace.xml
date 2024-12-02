@@ -7,6 +7,7 @@
     <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="chat">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,7 +56,7 @@
     "Application.Login (1).executor": "Debug",
     "Application.Login (2).executor": "Run",
     "Application.Login (3).executor": "Run",
-    "Application.Login.executor": "Debug",
+    "Application.Login.executor": "Run",
     "Application.MainInterface (1).executor": "Run",
     "Application.MainInterface (2).executor": "Run",
     "Application.MainInterface.executor": "Run",
@@ -91,7 +92,7 @@
       <recent name="Client.tmpl" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Login (1)">
+  <component name="RunManager" selected="Application.Login">
     <configuration name="Connect (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
       <module name="P2P_video_call" />
@@ -179,10 +180,10 @@
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Login (1)" />
-        <item itemvalue="Application.Connect (1)" />
-        <item itemvalue="Application.Login (3)" />
         <item itemvalue="Application.Login" />
+        <item itemvalue="Application.Connect (1)" />
+        <item itemvalue="Application.Login (1)" />
+        <item itemvalue="Application.Login (3)" />
         <item itemvalue="Application.Login (2)" />
       </list>
     </recent_temporary>
@@ -217,7 +218,7 @@
       <workItem from="1732690092639" duration="9521000" />
       <workItem from="1732805814608" duration="1055000" />
       <workItem from="1732852884932" duration="1761000" />
-      <workItem from="1733102368507" duration="26692000" />
+      <workItem from="1733102368507" duration="27785000" />
     </task>
     <task id="LOCAL-00001" summary="è">
       <option name="closed" value="true" />
@@ -451,7 +452,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733134670043</updated>
     </task>
-    <option name="localTasksCounter" value="30" />
+    <task id="LOCAL-00030" summary="chat">
+      <option name="closed" value="true" />
+      <created>1733135921352</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1733135921354</updated>
+    </task>
+    <option name="localTasksCounter" value="31" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -485,12 +494,12 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>178</line>
+          <line>182</line>
           <option name="timeStamp" value="7" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>165</line>
+          <line>169</line>
           <option name="timeStamp" value="8" />
         </line-breakpoint>
         <breakpoint enabled="true" type="java-exception">

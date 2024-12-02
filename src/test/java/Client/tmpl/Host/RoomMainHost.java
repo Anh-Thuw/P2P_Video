@@ -147,18 +147,19 @@ public class RoomMainHost extends JPanel {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);
-                System.out.println("Server is listening on port " + port);
-
                 clientSocket = serverSocket.accept();
-                System.out.println("Client connected: " + clientSocket);
 
                 clientSockets.add(clientSocket);
 
-                dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-                dataInputStream = new DataInputStream(clientSocket.getInputStream());
+                dataOutputStream    = new DataOutputStream(clientSocket.getOutputStream());
+                dataInputStream     = new DataInputStream(clientSocket.getInputStream());
+
+                objectInputStream   = new ObjectInputStream(clientSocket.getInputStream());
+                objectOutputStream  = new ObjectOutputStream(clientSocket.getOutputStream());
+
                 //video
-//                new Thread(() -> receiveVideo(clientSocket)).start();
-//                new Thread(() -> sendVideo(clientSocket)).start();
+                new Thread(() -> receiveVideo(clientSocket)).start();
+                new Thread(() -> sendVideo(clientSocket)).start();
                 // chat
                 new Thread(() -> receiveChat(clientSocket)).start();
             } catch (IOException e) {
