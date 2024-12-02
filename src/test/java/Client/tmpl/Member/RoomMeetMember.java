@@ -1,12 +1,12 @@
 
-package Client.tmpl.Client;
+package Client.tmpl.Member;
 
 import javax.swing.*;
 import java.awt.*;
 import java.net.Socket;
 import java.util.Timer;
 
-public class RoomMeetClient extends JFrame {
+public class RoomMeetMember extends JFrame {
     private Socket      socket ;
 	private String      username ;
     private String      ipHost ;
@@ -14,13 +14,14 @@ public class RoomMeetClient extends JFrame {
 
     private Timer       time  ;
 
-  public RoomMeetClient(String username , int port , String ipHost ) {
+  public RoomMeetMember(Socket socket , String username , int port , String ipHost ) {
 	try {
-	//	this.socket 		= socket ;
+		this.socket 		= socket ;
 		this.username 		= username ;
 		this.port 		    = port ;
         this.ipHost         = ipHost ;
 		Frame_RoomMeet();
+
 
 
 	} catch (Exception e) {
@@ -41,11 +42,11 @@ public class RoomMeetClient extends JFrame {
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.setBackground(Color.WHITE);
 
-        RoomMainClient mainRoom = new RoomMainClient(port, username , ipHost);
+        RoomMainMember mainRoom = new RoomMainMember(port, username , ipHost);
         mainRoom.setBackground(Color.LIGHT_GRAY);
         tabbedPane.addTab("Main Room", mainRoom);
 
-        RoomManagerClient roomManager = new RoomManagerClient();
+        RoomManagerMember roomManager = new RoomManagerMember();
         roomManager.setBackground(Color.WHITE);
         tabbedPane.addTab("Room Manager", roomManager);
 

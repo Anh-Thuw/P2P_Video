@@ -1,4 +1,4 @@
-package Client.tmpl.Client;
+package Client.tmpl.Member;
 
 import javax.swing.*;
 import java.awt.*;
@@ -7,10 +7,10 @@ import java.awt.event.ActionListener;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
-public class RoomManagerClient extends JPanel {
+public class RoomManagerMember extends JPanel {
     private DefaultListModel<String> memberListModel;
 
-    public RoomManagerClient() {
+    public RoomManagerMember() {
         // Lấy kích thước màn hình
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int screenWidth = screenSize.width;

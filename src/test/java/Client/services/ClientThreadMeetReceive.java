@@ -7,14 +7,14 @@ import java.util.StringTokenizer;
 import javax.swing.JFrame;
 
 import Client.model.ListClient;
-import Client.tmpl.Client.RoomMeetClient;
+import Client.tmpl.Member.RoomMeetMember;
 import Client.tmpl.Host.RoomMeetHost;
 
 public class ClientThreadMeetReceive extends Thread {
     private		ArrayList<ListClient> 	listClients 		= ListClient.list;
     private 	StringTokenizer			cont;	
     private 	RoomMeetHost 			roomMeetHost;
-	private 	RoomMeetClient 			roomMeetClient;
+	private RoomMeetMember roomMeetClient;
 	private 	Socket 					socket;
     private		String 					username ;
 	private 	JFrame 					jFrame;
@@ -56,7 +56,7 @@ public class ClientThreadMeetReceive extends Thread {
 	public void doCreateMeetOK() throws Exception {
 		String username = cont.nextToken();
 		int    port 	= Integer.parseInt(cont.nextToken());
-		roomMeetHost = new RoomMeetHost(username ,port);
+		roomMeetHost = new RoomMeetHost(socket , username ,port);
 		jFrame.setVisible(false);
 		roomMeetHost.setVisible(true);
 	}
@@ -65,7 +65,7 @@ public class ClientThreadMeetReceive extends Thread {
 		int    port 	= Integer.parseInt(cont.nextToken());
 		String ip		= cont.nextToken();
 
-		roomMeetClient = new RoomMeetClient(username ,port , ip);
+		roomMeetClient = new RoomMeetMember(socket , username ,port , ip);
 		jFrame.setVisible(false);
 		roomMeetClient.setVisible(true);
 	}

@@ -1,4 +1,4 @@
-package Client.tmpl.Client;
+package Client.tmpl.Member;
 
 import Client.tmpl.Home;
 import com.github.sarxos.webcam.Webcam;
@@ -8,17 +8,13 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.InetAddress;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 
-public class RoomMainClient extends JPanel {
+public class RoomMainMember extends JPanel {
     private static final int WEBCAM_WIDTH = 640, WEBCAM_HEIGHT = 480;
 
     // UI Components
@@ -43,7 +39,7 @@ public class RoomMainClient extends JPanel {
     private boolean              isCameraOn = true;
     private boolean              isMicOn = true;
     private  BufferedImage       frame ;
-    public RoomMainClient(int port , String username , String ipHost) {
+    public RoomMainMember(int port , String username , String ipHost) {
         try {
             this.username 		= username ;
             this.port 		    = port ;

@@ -37,7 +37,6 @@ public class ClientThreadReceive extends Thread{
 				case "Call_Meet": {
 					ClientThreadMeetReceive meetReceive = new ClientThreadMeetReceive(cont, socket, username, jFrame);
 					meetReceive.start();
-					System.out.println("contcontcont"+cont);
 					break;
 				}
 				default: {

@@ -46,12 +46,6 @@ public class RoomMainHost extends JPanel {
     private boolean              isMicOn = true;
     private  BufferedImage       frame ;
     private List<Socket> clientSockets = Collections.synchronizedList(new ArrayList<>());
-
-    private static Map<Socket, DataOutputStream> clientStreams = new HashMap<>();
-
-
-
-
     public RoomMainHost(int port , String username) {
         try {
             this.username 		= username ;
@@ -153,19 +147,19 @@ public class RoomMainHost extends JPanel {
         new Thread(() -> {
             try {
                 serverSocket = new ServerSocket(port);
-                while (true) {
-                    clientSocket = serverSocket.accept();
-                    System.out.println("Client connected: " + clientSocket);
+                System.out.println("Server is listening on port " + port);
 
-                    synchronized (clientSockets) {
-                        clientSockets.add(clientSocket);
-                    }
-                    //video
-                    new Thread(() -> receiveVideo(clientSocket)).start();
-                    new Thread(() -> sendVideo(clientSocket)).start();
-                    // chat
-                    new Thread(() -> receiveChat(clientSocket)).start();
+                clientSocket = serverSocket.accept();
+                System.out.println("Client connected: " + clientSocket);
+
+                synchronized (clientSockets) {
+                    clientSockets.add(clientSocket);
                 }
+                //video
+                new Thread(() -> receiveVideo(clientSocket)).start();
+                new Thread(() -> sendVideo(clientSocket)).start();
+                // chat
+                new Thread(() -> receiveChat(clientSocket)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
