@@ -154,7 +154,7 @@ public class RoomMainHost extends JPanel {
             try {
                 serverSocket = new ServerSocket(port);
                 while (true) {
-                    clientSocket = serverSocket.accept();
+                    Socket  clientSocket = serverSocket.accept();
 
                     synchronized (clientSockets) {
                         clientSockets.add(clientSocket);
