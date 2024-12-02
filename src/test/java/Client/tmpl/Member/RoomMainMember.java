@@ -140,12 +140,7 @@ public class RoomMainMember extends JPanel {
     private void setupClient() {
         new Thread(() -> {
             try {
-                clientSocket = new Socket( ipHost , port);
-                if (clientSocket == null || clientSocket.isClosed()) {
-                    JOptionPane.showMessageDialog(this, "Kết nối chưa được thiết lập. Vui lòng thử lại.");
-                    return;
-                }
-
+                Socket clientSocket = new Socket( ipHost , port);
                 //video
                 new Thread(() -> receiveVideo(clientSocket)).start();
                 new Thread(() -> sendVideo(clientSocket)).start();
@@ -161,13 +156,22 @@ public class RoomMainMember extends JPanel {
         try {
             DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
             String message;
-            while ((message = dataInputStream.readUTF()) != null) {
-                chatArea.append(message + "\n");
+            while (true) {
+                try {
+                    message = dataInputStream.readUTF();
+                    chatArea.append(message + "\n");
+                } catch (EOFException e) {
+                    break;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    break;
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
+
 
     private void sendChat() {
         try {
@@ -194,7 +198,7 @@ public class RoomMainMember extends JPanel {
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {
         try {
-            objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+            ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
             while (true) {
                 ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
                 SwingUtilities.invokeLater(() -> {
@@ -209,7 +213,7 @@ public class RoomMainMember extends JPanel {
 
     private void sendVideo(Socket clientSocket) {
         try {
-            objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+            ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
 
             webcam.open();
             isCameraOn = true;

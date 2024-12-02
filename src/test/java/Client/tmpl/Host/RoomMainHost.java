@@ -211,7 +211,7 @@ public class RoomMainHost extends JPanel {
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {
         try {
-            objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+            ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
             while (true) {
                 ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
                 SwingUtilities.invokeLater(() -> {

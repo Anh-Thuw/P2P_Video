@@ -13,7 +13,7 @@ public class RoomMeetHost extends JFrame {
 
     private Timer       time  ;
 
-  public RoomMeetHost(Socket socket , String username , int port ) {
+  public RoomMeetHost(String username , int port ) {
 	try {
 		this.socket 		= socket ;
 		this.username 		= username ;

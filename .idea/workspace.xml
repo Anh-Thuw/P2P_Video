@@ -7,12 +7,10 @@
     <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="chat">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/Client/services/ClientThreadMeetReceive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/services/ClientThreadMeetReceive.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Client/services/ClientThreadReceive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/services/ClientThreadReceive.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Client/RoomMainClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Client/RoomManagerClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomManagerMember.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Client/RoomMeetClient.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMeetMember.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMeetHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMeetHost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMeetMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMeetMember.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -61,7 +59,7 @@
     "Application.Login (1).executor": "Run",
     "Application.Login (2).executor": "Run",
     "Application.Login (3).executor": "Run",
-    "Application.Login.executor": "Run",
+    "Application.Login.executor": "Debug",
     "Application.MainInterface (1).executor": "Run",
     "Application.MainInterface (2).executor": "Run",
     "Application.MainInterface.executor": "Run",
@@ -97,7 +95,7 @@
       <recent name="Client.tmpl" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.MainInterface">
+  <component name="RunManager" selected="Application.Login">
     <configuration name="Connect (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
       <module name="P2P_video_call" />
@@ -179,10 +177,10 @@
     </list>
     <recent_temporary>
       <list>
+        <item itemvalue="Application.Login" />
+        <item itemvalue="Application.Connect (1)" />
         <item itemvalue="Application.MainInterface" />
         <item itemvalue="Application.Login (1)" />
-        <item itemvalue="Application.Connect (1)" />
-        <item itemvalue="Application.Login" />
         <item itemvalue="Application.Login (3)" />
       </list>
     </recent_temporary>
@@ -217,7 +215,7 @@
       <workItem from="1732690092639" duration="9521000" />
       <workItem from="1732805814608" duration="1055000" />
       <workItem from="1732852884932" duration="1761000" />
-      <workItem from="1733102368507" duration="13522000" />
+      <workItem from="1733102368507" duration="15488000" />
     </task>
     <task id="LOCAL-00001" summary="è">
       <option name="closed" value="true" />
@@ -387,7 +385,15 @@
       <option name="project" value="LOCAL" />
       <updated>1733109406733</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="chat">
+      <option name="closed" value="true" />
+      <created>1733116126570</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1733116126571</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -415,6 +421,27 @@
     <MESSAGE value="ip" />
     <MESSAGE value="chat" />
     <option name="LAST_COMMIT_MESSAGE" value="chat" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
+          <line>142</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
+          <line>46</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
+          <line>184</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

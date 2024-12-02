@@ -14,14 +14,13 @@ public class RoomMeetMember extends JFrame {
 
     private Timer       time  ;
 
-  public RoomMeetMember(Socket socket , String username , int port , String ipHost ) {
+  public RoomMeetMember( String username , int port , String ipHost ) {
 	try {
 		this.socket 		= socket ;
 		this.username 		= username ;
 		this.port 		    = port ;
         this.ipHost         = ipHost ;
 		Frame_RoomMeet();
-
 
 
 	} catch (Exception e) {

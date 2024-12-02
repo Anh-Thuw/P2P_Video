@@ -56,7 +56,7 @@ public class ClientThreadMeetReceive extends Thread {
 	public void doCreateMeetOK() throws Exception {
 		String username = cont.nextToken();
 		int    port 	= Integer.parseInt(cont.nextToken());
-		roomMeetHost = new RoomMeetHost(socket , username ,port);
+		roomMeetHost = new RoomMeetHost(username ,port);
 		jFrame.setVisible(false);
 		roomMeetHost.setVisible(true);
 	}
@@ -65,7 +65,7 @@ public class ClientThreadMeetReceive extends Thread {
 		int    port 	= Integer.parseInt(cont.nextToken());
 		String ip		= cont.nextToken();
 
-		roomMeetClient = new RoomMeetMember(socket , username ,port , ip);
+		roomMeetClient = new RoomMeetMember(username ,port , ip);
 		jFrame.setVisible(false);
 		roomMeetClient.setVisible(true);
 	}
