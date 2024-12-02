@@ -38,7 +38,7 @@ public class RoomMainHost extends JPanel {
     private  BufferedImage       frame ;
     public static final byte[]   BUFFER = new byte[4096];
     private DatagramPacket       sendPacket, receivePacket;
-    static  MulticastSocket     multicastSocket = null;
+    public static MulticastSocket     multicastSocket = null;
     private InetAddress         groupAddress ;
     public RoomMainHost(int port , String username) {
         try {
@@ -145,7 +145,7 @@ public class RoomMainHost extends JPanel {
 
                 multicastSocket = new MulticastSocket(port);
                 multicastSocket.joinGroup(groupAddress);
-
+                new Thread(() -> receiveData()).start();
 //                new Thread(() -> {
 //                    try {
 //                        while (true) {
@@ -157,7 +157,6 @@ public class RoomMainHost extends JPanel {
 //                        e.printStackTrace();
 //                    }
 //                }).start();
-                new Thread(() -> receiveData()).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

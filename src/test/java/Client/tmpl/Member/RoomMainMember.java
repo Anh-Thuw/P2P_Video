@@ -1,6 +1,7 @@
 package Client.tmpl.Member;
 
 import Client.tmpl.Home;
+import Client.tmpl.Host.RoomMainHost;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 
@@ -143,8 +144,8 @@ public class RoomMainMember extends JPanel {
         try {
             socket = new DatagramSocket(port);
 
-            multicastSocket = new MulticastSocket(port);
-            multicastSocket.joinGroup(InetAddress.getByName(ipHost));
+            multicastSocket = RoomMainHost.multicastSocket;
+            multicastSocket.joinGroup(InetAddress.getByName(ipHost));;
 
 //            new Thread(() -> sendVideo()).start();
 //            new Thread(() -> receiveVideo()).start();
