@@ -164,37 +164,6 @@ public class RoomMainMember extends JPanel {
             }
         }).start();
     }
-
-    private void receiveChat() {
-        try {
-            String message;
-            while ((message = dataInputStream.readUTF()) != null) {
-                chatArea.append(message + "\n");
-            }
-        } catch (IOException e) {
-            System.err.println("Connection lost: " + e.getMessage());
-        }
-    }
-
-
-
-    private void sendChat() {
-        try {
-            String inputText = chatInput.getText().trim();
-            if (inputText.isEmpty()) return;
-
-            String message = username + ": " + inputText;
-            dataOutputStream.writeUTF(message);
-            dataOutputStream.flush();
-
-            chatArea.append(message + "\n");
-            chatInput.setText("");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     // Nhận video từ các client khác
     private void receiveVideo(Socket clientSocket) {
         try {
@@ -218,14 +187,11 @@ public class RoomMainMember extends JPanel {
                 JOptionPane.showMessageDialog(this, "Webcam chưa được khởi tạo");
                 return;
             }
-
             // Mở webcam
             webcam.open();
             isCameraOn = true;
             isMicOn = true;
-
             ObjectOutputStream objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-
             while (true) {
                 // Lấy ảnh từ webcam và truyền đi
                 frame = webcam.getImage();
@@ -238,7 +204,6 @@ public class RoomMainMember extends JPanel {
             e.printStackTrace();
         }
     }
-
     // Cập nhật hiển thị video nhận được
     private void updateVideoDisplay(JLabel videoLabel) {
         webcamPanel.removeAll();
@@ -250,6 +215,32 @@ public class RoomMainMember extends JPanel {
         webcam = Webcam.getDefault();
         webcam.setViewSize(new Dimension(WEBCAM_WIDTH, WEBCAM_HEIGHT));
         return new WebcamPanel(webcam);
+    }
+
+    private void receiveChat() {
+        try {
+            String message;
+            while ((message = dataInputStream.readUTF()) != null) {
+                chatArea.append(message + "\n");
+            }
+        } catch (IOException e) {
+            System.err.println("Connection lost: " + e.getMessage());
+        }
+    }
+    private void sendChat() {
+        try {
+            String inputText = chatInput.getText().trim();
+            if (inputText.isEmpty()) return;
+
+            String message = username + ": " + inputText;
+            dataOutputStream.writeUTF(message);
+            dataOutputStream.flush();
+
+            chatArea.append(message + "\n");
+            chatInput.setText("");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void toggleChatPanel() {

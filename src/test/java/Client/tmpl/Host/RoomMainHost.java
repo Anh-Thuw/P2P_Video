@@ -167,6 +167,34 @@ public class RoomMainHost extends JPanel {
             }
         }).start();
     }
+    // Nhận video từ các client khác
+    private void receiveVideo(Socket clientSocket) {
+        try {
+            ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
+            while (true) {
+                ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
+                SwingUtilities.invokeLater(() -> {
+                    JLabel videoLabel = new JLabel(receivedImage);
+                    updateVideoDisplay(videoLabel);
+                });
+            }
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+    private void sendVideo(Socket clientSocket) {
+        try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
+            while (isCameraOn) {
+                frame = webcam.getImage();
+                ImageIcon imageIcon = new ImageIcon(frame);
+                out.writeObject(imageIcon);
+                out.flush();
+                Thread.sleep(50);
+            }
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
     private void receiveChat(Socket clientSocket) {
         try {
             String message;
@@ -195,37 +223,6 @@ public class RoomMainHost extends JPanel {
             chatArea.append(message + "\n");
             chatInput.setText("");
         } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    // Nhận video từ các client khác
-    private void receiveVideo(Socket clientSocket) {
-        try {
-            ObjectInputStream objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
-            while (true) {
-                ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
-                SwingUtilities.invokeLater(() -> {
-                    JLabel videoLabel = new JLabel(receivedImage);
-                    updateVideoDisplay(videoLabel);
-                });
-            }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void sendVideo(Socket clientSocket) {
-        try (ObjectOutputStream out = new ObjectOutputStream(clientSocket.getOutputStream())) {
-            while (isCameraOn) {
-                frame = webcam.getImage();
-                ImageIcon imageIcon = new ImageIcon(frame);
-                out.writeObject(imageIcon);
-                out.flush();
-                Thread.sleep(50);
-            }
-        } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
     }
