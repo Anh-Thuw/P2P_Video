@@ -168,27 +168,24 @@ public class RoomMainHost extends JPanel {
     private void receiveChat() {
         try {
             String message;
+            DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
+            message = dataInputStream.readUTF();
+            chatArea.append(message + "\n");
+
             while (true) {
                 for (Socket clientSocket : clientSockets) {
-                    DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
-                    message = dataInputStream.readUTF();
-                    broadcastMessage(message);
+                    try {
+                        DataOutputStream dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+                        dataOutputStream.writeUTF(message);
+                        dataOutputStream.flush();
+                    } catch (IOException e) {
+                        System.err.println("Failed to broadcast message: " + e.getMessage());
+                    }
                 }
             }
+
         } catch (IOException e) {
             System.err.println("Error receiving message: " + e.getMessage());
-        }
-    }
-
-    private void broadcastMessage(String message) {
-        for (Socket clientSocket : clientSockets) {
-            try {
-                DataOutputStream dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
-                dataOutputStream.writeUTF(message);
-                dataOutputStream.flush();
-            } catch (IOException e) {
-                System.err.println("Failed to broadcast message: " + e.getMessage());
-            }
         }
     }
 
