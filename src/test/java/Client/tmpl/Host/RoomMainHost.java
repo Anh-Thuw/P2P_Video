@@ -159,33 +159,36 @@ public class RoomMainHost extends JPanel {
 //                new Thread(() -> receiveVideo(clientSocket)).start();
 //                new Thread(() -> sendVideo(clientSocket)).start();
                 // chat
-                new Thread(() -> receiveChat(clientSocket)).start();
+                new Thread(() -> receiveChat()).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
     }
-    private void receiveChat(Socket clientSocket) {
+    private void receiveChat() {
         try {
-            dataInputStream = new DataInputStream(clientSocket.getInputStream());
             String message;
-            while ((message = dataInputStream.readUTF()) != null && !message.trim().isEmpty()) {
-                chatArea.append(message + "\n");
-                synchronized (clientSockets) {
-                    for (Socket socket : clientSockets) {
-                        if (socket != clientSocket) {
-                            try {
-                                dataOutputStream = new DataOutputStream(socket.getOutputStream());
-                                dataOutputStream.writeUTF(message);
-                            } catch (IOException ex) {
-                                ex.printStackTrace();
-                            }
-                        }
-                    }
+            while (true) {
+                for (Socket clientSocket : clientSockets) {
+                    DataInputStream dataInputStream = new DataInputStream(clientSocket.getInputStream());
+                    message = dataInputStream.readUTF();
+                    broadcastMessage(message);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.err.println("Error receiving message: " + e.getMessage());
+        }
+    }
+
+    private void broadcastMessage(String message) {
+        for (Socket clientSocket : clientSockets) {
+            try {
+                DataOutputStream dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
+                dataOutputStream.writeUTF(message);
+                dataOutputStream.flush();
+            } catch (IOException e) {
+                System.err.println("Failed to broadcast message: " + e.getMessage());
+            }
         }
     }
 
