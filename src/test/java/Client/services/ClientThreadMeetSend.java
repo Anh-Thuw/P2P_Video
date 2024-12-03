@@ -20,22 +20,27 @@ public class ClientThreadMeetSend extends Thread{
 
 	public ClientThreadMeetSend(String cmd,Socket socket, String username , int port , String ip , JFrame jFrame) throws Exception {
 		this.cmd 				=	cmd ;
-		this.socket				= 	socket ; 
+		this.socket				= 	socket ;
 		this.username			= 	username ;
 		this.port 				= 	port ;
 		this.ip 				= 	ip ;
 		this.jFrame 			= 	jFrame;
-		this.dos  				= 	new DataOutputStream(socket.getOutputStream());	}
+		this.dos  				= 	new DataOutputStream(null);
+	}
 
 	private static final String sepa = "<?>";
 	public void doSendData(String cmd, String...cont) {
 		try {
-			synchronized(dos) {
-				String msg = cmd;
-				for (String s: cont) msg = msg + sepa + s ;
-				dos.writeUTF(msg);
+			if(socket != null){
+				dos = new DataOutputStream(socket.getOutputStream());
+				if(dos!=null){
+					synchronized(dos) {
+						String msg = cmd;
+						for (String s: cont) msg = msg + sepa + s ;
+						dos.writeUTF(msg);
+					}
+				}
 			}
-
 		}catch(Exception e) {
 			e.printStackTrace();
 		}

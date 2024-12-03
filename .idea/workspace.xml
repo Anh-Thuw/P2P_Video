@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="chat" />
+    <list default="true" id="f0d4a9df-1414-4086-b9d2-558581566e09" name="Changes" comment="chat">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/services/CheckInfor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/services/CheckInfor.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/services/Client.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/services/Client.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/services/ClientThreadMeetSend.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/services/ClientThreadMeetSend.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Host/RoomMainHost.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -50,9 +57,10 @@
     "Application.ConnectDB.executor": "Run",
     "Application.DemoApp.executor": "Run",
     "Application.Login (1).executor": "Debug",
-    "Application.Login (2).executor": "Debug",
-    "Application.Login (3).executor": "Run",
-    "Application.Login.executor": "Debug",
+    "Application.Login (2).executor": "Run",
+    "Application.Login (3).executor": "Debug",
+    "Application.Login (4).executor": "Debug",
+    "Application.Login.executor": "Run",
     "Application.MainInterface (1).executor": "Run",
     "Application.MainInterface (2).executor": "Run",
     "Application.MainInterface.executor": "Run",
@@ -62,7 +70,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "git-widget-placeholder": "54b5dd6b",
+    "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "D:/HK5_2024/DACS4/P2P_Video/src/test/java/Client/tmpl/Host",
     "node.js.detected.package.eslint": "true",
@@ -88,20 +96,7 @@
       <recent name="Client.tmpl" />
     </key>
   </component>
-  <component name="RunManager" selected="Application.Login (2)">
-    <configuration name="Connect (1)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
-      <module name="P2P_video_call" />
-      <extension name="coverage">
-        <pattern>
-          <option name="PATTERN" value="clientserver.tmpl.*" />
-          <option name="ENABLED" value="true" />
-        </pattern>
-      </extension>
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
+  <component name="RunManager" selected="Application.Login (4)">
     <configuration name="Connect" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="clientserver.tmpl.Connect" />
       <module name="P2P_video_call" />
@@ -141,6 +136,19 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="Login (4)" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Client.tmpl.Login" />
+      <module name="P2P_video_call" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Client.tmpl.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="Login" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Client.tmpl.Login" />
       <module name="P2P_video_call" />
@@ -168,19 +176,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.Login (4)" />
       <item itemvalue="Application.Connect" />
       <item itemvalue="Application.Login" />
-      <item itemvalue="Application.Connect (1)" />
       <item itemvalue="Application.Login (2)" />
       <item itemvalue="Application.Login (1)" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Application.Login (2)" />
+        <item itemvalue="Application.Login (4)" />
         <item itemvalue="Application.Connect" />
-        <item itemvalue="Application.Login" />
-        <item itemvalue="Application.Connect (1)" />
         <item itemvalue="Application.Login (1)" />
+        <item itemvalue="Application.Login (2)" />
+        <item itemvalue="Application.Login" />
       </list>
     </recent_temporary>
   </component>
@@ -506,28 +514,27 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>156</line>
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>183</line>
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>150</line>
-          <option name="timeStamp" value="33" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>152</line>
+          <line>154</line>
           <option name="timeStamp" value="35" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
-          <line>153</line>
+          <line>155</line>
           <option name="timeStamp" value="36" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
+          <line>356</line>
+          <option name="timeStamp" value="64" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/src/test/java/Client/tmpl/Member/RoomMainMember.java</url>
+          <line>379</line>
+          <properties class="Client.tmpl.Member.RoomMainMember" method="stopWebcam">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="67" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

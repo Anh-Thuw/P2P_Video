@@ -4,6 +4,7 @@ import Client.tmpl.Home;
 import com.github.sarxos.webcam.Webcam;
 import com.github.sarxos.webcam.WebcamPanel;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -28,10 +29,11 @@ public class RoomMainMember extends JPanel {
     private Timer                timer;
     private Webcam               webcam;
     // Networking
-    private ObjectInputStream    objectInputStream;
-    private ObjectOutputStream   objectOutputStream;
     private DataOutputStream     dataOutputStream ;
     private DataInputStream      dataInputStream ;
+    private ObjectOutputStream     objectOutputStream ;
+    private ObjectInputStream      objectInputStream ;
+
     private Socket               clientSocket;
     private WebcamPanel          camPanel;
     private String               username , ipHost;
@@ -39,15 +41,17 @@ public class RoomMainMember extends JPanel {
     private boolean              isCameraOn = true;
     private boolean              isMicOn = true;
     private  BufferedImage       frame ;
+    private JPanel otherWebcamPanel = new JPanel(new BorderLayout());
+
     public RoomMainMember(int port , String username , String ipHost) {
         try {
             this.username 		= username ;
             this.port 		    = port ;
             this.ipHost         = ipHost ;
-            webcam = Webcam.getDefault();  // Lấy webcam mặc định
+            webcam = Webcam.getDefault();
             if (webcam == null) {
                 JOptionPane.showMessageDialog(this, "Không tìm thấy webcam");
-                return; // Nếu không có webcam, thoát khỏi hàm
+                return;
             }
             setupClient();
             Frame_RoomMain();
@@ -147,96 +151,189 @@ public class RoomMainMember extends JPanel {
             try {
                 clientSocket = new Socket( ipHost , port);
 
-                objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
-                objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
 
                 dataOutputStream = new DataOutputStream(clientSocket.getOutputStream());
                 dataInputStream = new DataInputStream(clientSocket.getInputStream());
+
+//                 objectOutputStream = new ObjectOutputStream(clientSocket.getOutputStream());
+//                 objectInputStream = new ObjectInputStream(clientSocket.getInputStream());
                 //video
-                new Thread(() -> sendVideo(clientSocket)).start();
-                new Thread(() -> receiveVideo(clientSocket)).start();
+                sendVideo(dataOutputStream);
+                receiveVideo(dataInputStream);
                 // chat
-                new Thread(() -> receiveChat()).start();
+                //   receiveChat(objectInputStream);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }).start();
     }
+
     // Nhận video từ các client khác
-    private void receiveVideo(Socket clientSocket) {
-        try {
-            System.out.println("da vao nhan video");
-            while (true) {
-                ImageIcon receivedImage = (ImageIcon) objectInputStream.readObject();
-                SwingUtilities.invokeLater(() -> {
-                    videoLabel = new JLabel(receivedImage);
+    private void receiveVideo(DataInputStream inputStream){
+        new Thread(() -> {
+            try {
+                while (true) {
+                    // Đọc kích thước của ảnh
+                    int length = inputStream.readInt();
+                    byte[] imageBytes = new byte[length];
+
+                    // Đọc nội dung ảnh
+                    inputStream.readFully(imageBytes);
+
+                    // Chuyển đổi byte thành ảnh
+                    BufferedImage image = convertBytesToImage(imageBytes);
+
+                    // Hiển thị ảnh trên JLabel
+                    ImageIcon icon = new ImageIcon(image);
+                    JLabel videoLabel = new JLabel(icon);
+
+                    // Thêm video vào webcam panel
                     updateVideoDisplay(videoLabel);
-                    System.out.println("hmmmmmmmmmmmmmmmmm");
-                });
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-        }
+        }).start();
     }
 
-    private void sendVideo(Socket clientSocket) {
-        try {
-            if (webcam == null) {
-                JOptionPane.showMessageDialog(this, "Webcam chưa được khởi tạo");
-                return;
+    private void sendVideo(DataOutputStream outputStream) {
+        new Thread(() -> {
+            try {
+                System.out.println("cam send: "+isCameraOn);
+                while (isCameraOn) {
+                    if (webcam == null || !webcam.isOpen()) {
+                        webcam = Webcam.getDefault();
+                        if (webcam != null) {
+                            webcam.open();
+                        }
+                    }
+                    try {
+                        // Đợi 1 giây hoặc lâu hơn để webcam ổn định
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    BufferedImage image = webcam.getImage();
+                    byte[] imageBytes = convertImageToBytes(image);
+
+                    // Gửi kích thước của ảnh trước
+                    outputStream.writeInt(imageBytes.length);
+                    outputStream.flush();
+
+                    // Gửi nội dung ảnh
+                    outputStream.write(imageBytes);
+                    outputStream.flush();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            System.out.println("da vao gui video");
-            // Mở webcam
-            webcam.open();
-            isCameraOn = true;
-            isMicOn = true;
-            while (true) {
-                // Lấy ảnh từ webcam và truyền đi
-                frame = webcam.getImage();
-                ImageIcon imageIcon = new ImageIcon(frame);
-                objectOutputStream.writeObject(imageIcon);
-                objectOutputStream.flush();
-                System.out.println("outToHost");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        }).start();
+    }
+    private byte[] convertImageToBytes(BufferedImage image) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ImageIO.write(image, "jpg", baos);
+        return baos.toByteArray();
+    }
+
+    private BufferedImage convertBytesToImage(byte[] bytes) throws IOException {
+        ByteArrayInputStream bais = new ByteArrayInputStream(bytes);
+        return ImageIO.read(bais);
     }
     // Cập nhật hiển thị video nhận được
     private void updateVideoDisplay(JLabel videoLabel) {
-        webcamPanel.removeAll();
-        webcamPanel.add(videoLabel);
+        // Nếu webcam của người gửi chưa được thêm, thêm vào một panel mới
+        if (otherWebcamPanel.getComponentCount() == 0) {
+            otherWebcamPanel.add(videoLabel, BorderLayout.CENTER);
+            webcamPanel.add(otherWebcamPanel, BorderLayout.EAST);
+        } else {
+            // Cập nhật lại video của người gửi
+            otherWebcamPanel.removeAll();
+            otherWebcamPanel.add(videoLabel, BorderLayout.CENTER);
+        }
+
+        // Cập nhật lại giao diện
         webcamPanel.revalidate();
         webcamPanel.repaint();
     }
+
     private WebcamPanel initWebcamPanel() {
         webcam = Webcam.getDefault();
         webcam.setViewSize(new Dimension(WEBCAM_WIDTH, WEBCAM_HEIGHT));
         return new WebcamPanel(webcam);
     }
+//    private void receiveChat(DataInputStream inputStream) {
+//        new Thread(() -> {
+//            try {
+//                String message;
+//                while (true) {
+//                    message = inputStream.readLine();
+//                    if (message != null) {
+//                        chatArea.append(message + "\n");
+//                    }
+//                }
+//            } catch (IOException e) {
+//                System.err.println("Connection lost: " + e.getMessage());
+//            }
+//        }).start();
+//    }
+//    private void sendChat() {
+//        try {
+//            String inputText = chatInput.getText().trim();
+//            if (inputText.isEmpty()) return;
+//
+//            String message = username + ": " + inputText;
+//
+//            dataOutputStream.writeUTF(message); //
+//            dataOutputStream.flush();
+//            // Cập nhật giao diện người dùng (UI) sau khi gửi tin nhắn
+//            chatArea.append(message + "\n");
+//            chatInput.setText("");  // Xóa ô nhập sau khi gửi tin nhắn
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
+//
 
-    private void receiveChat() {
-        try {
-            String message;
-            while ((message = dataInputStream.readUTF()) != null) {
-                chatArea.append(message + "\n");
+    private void receiveChat(ObjectInputStream objectInputStream) {
+        new Thread(() -> {
+            try {
+                while (true) {
+                    // Blocking call to read incoming message
+                    Object received = objectInputStream.readObject();
+                    if (received instanceof String) {
+                        String message = (String) received;
+                        SwingUtilities.invokeLater(() -> chatArea.append(message + "\n"));
+                    } else {
+                        System.err.println("Received unsupported object: " + received.getClass().getName());
+                    }
+                }
+            } catch (IOException e) {
+                System.err.println("Connection lost: " + e.getMessage());
+            } catch (ClassNotFoundException e) {
+                System.err.println("Error reading object: " + e.getMessage());
             }
-        } catch (IOException e) {
-            System.err.println("Connection lost: " + e.getMessage());
-        }
+        }).start();
     }
+
     private void sendChat() {
         try {
             String inputText = chatInput.getText().trim();
-            if (inputText.isEmpty()) return;
+            if (inputText.isEmpty()) return; // Nếu chuỗi nhập trống, không gửi tin nhắn
 
             String message = username + ": " + inputText;
-            dataOutputStream.writeUTF(message);
-            dataOutputStream.flush();
 
-            chatArea.append(message + "\n");
-            chatInput.setText("");
+            // Gửi tin nhắn qua ObjectOutputStream
+            objectOutputStream.writeObject(message);
+            objectOutputStream.flush(); // Đảm bảo dữ liệu được đẩy ngay lập tức
+
+            // Cập nhật giao diện người dùng
+            SwingUtilities.invokeLater(() -> {
+                chatArea.append(message + "\n"); // Hiển thị tin nhắn trong vùng chat
+                chatInput.setText(""); // Xóa ô nhập sau khi gửi
+            });
         } catch (IOException e) {
+            System.err.println("Error while sending chat: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -261,16 +358,21 @@ public class RoomMainMember extends JPanel {
             updateButtonIcon(buttonOnOffVideo, "IconOffVideo.png");
             stopWebcam();
             isCameraOn = !isCameraOn;
+            System.out.println("cam dong: "+isCameraOn);
         } else {
             updateButtonIcon(buttonOnOffVideo, "IconOnVideo.png");
             startWebcam();
             isCameraOn = !isCameraOn;
+            System.out.println("cam mo:  "+isCameraOn);
+
         }
     }
     private void startWebcam() {
+        webcam = Webcam.getDefault();
         if (webcam != null && !webcam.isOpen()) {
             webcam.open();
             camPanel.start();
+            sendVideo(dataOutputStream);
 //            sendData = true;
         }
     }
@@ -318,17 +420,6 @@ public class RoomMainMember extends JPanel {
                 dataOutputStream.flush();
                 dataOutputStream = null;
             }
-            if (objectInputStream != null) {
-                objectInputStream.close();
-                objectInputStream = null;
-            }
-
-            if (objectOutputStream != null) {
-                objectOutputStream.close();
-                objectOutputStream.flush();
-                objectOutputStream = null;
-            }
-
             if (webcam != null) {
                 webcam.close();
                 webcam = null;

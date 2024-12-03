@@ -18,7 +18,7 @@ public class CheckInfor extends Thread {
 	private 	Socket 				socket;
 	private 	DataOutputStream	dos ;
 	private 	DataInputStream 	dis;
-	
+
 	private 	String 				username;
 	private 	String 				password;
 	private 	String 				email;
@@ -28,19 +28,19 @@ public class CheckInfor extends Thread {
 	static Register_1 reg1;
 	static Register_2 reg2;
 
-	
-	
+
+
 	public CheckInfor(Socket socket, String username, String password, String email , JFrame jFrame) throws Exception {
 		this.socket 		= 	socket;
 		this.username 		= 	username;
 		this.password 		= 	password;
 		this.email 			= 	email;
-		this.jFrame 		= 	jFrame;		
+		this.jFrame 		= 	jFrame;
 		this.dos 			= 	new DataOutputStream(socket.getOutputStream());
 		this.dis 			= 	new DataInputStream(socket.getInputStream());
 
 	}
-	
+
 	private static final String sepa = "<?>";
 	public void doSendData(String cmd, String...cont) {
 		try {
@@ -54,7 +54,7 @@ public class CheckInfor extends Thread {
 			e.printStackTrace();
 		}
 	}
-	
+
 	@Override
 	public void run() {
 		try {
@@ -63,7 +63,7 @@ public class CheckInfor extends Thread {
 				String 			msg 	= 	dis.readUTF();
 				StringTokenizer cont 	= 	new StringTokenizer(msg, sepa);
 				String 			cmd 	= 	cont.nextToken();
-				
+
 				switch (cmd) {
 				case "Call_Login_OK": {
 					doLoginOK(cont);
@@ -82,7 +82,7 @@ public class CheckInfor extends Thread {
 					doSignupKO (cont);
 					break;
 				}
-				
+
 				case "Call_Email_OTP_OK": {
 					System.out.println("kkkkk");
 
@@ -93,7 +93,7 @@ public class CheckInfor extends Thread {
 					doEmailKO(cont);
 					break;
 				}
-				
+
 				case "Call_Check_OTP_OK": {
 					doCheckOtpOK(cont);
 					break;
@@ -118,15 +118,15 @@ public class CheckInfor extends Thread {
 		this.email = email;
 		doSendData ("Call_Email_OTP", email);
 	}
-	
+
 	public void doEmailOK(StringTokenizer cont) throws Exception {
 		System.out.println("gui mail thanh cong ");
-		((Register_1) jFrame).startCountdown(); 
+		((Register_1) jFrame).startCountdown();
 	}
-	
+
 	public void doEmailKO(StringTokenizer cont) throws Exception {
 		JOptionPane.showMessageDialog(null, "Email has been registered!");
-		
+
 	}
 	public void doCheckOTP(String otp) throws Exception {
 	    doSendData("Call_Check_OTP", otp);
@@ -138,31 +138,31 @@ public class CheckInfor extends Thread {
 		System.out.println(email);
 
 	}
-	
+
 	public void doCheckOtpKO(StringTokenizer cont) throws Exception {
 		JOptionPane.showMessageDialog(null, "OTP code is wrong", "Notification", JOptionPane.WARNING_MESSAGE);
 	}
 	public void doCheckOtp60(StringTokenizer cont) throws Exception {
 		JOptionPane.showMessageDialog(null, "Time out, please get the otp code again!", "Notification", JOptionPane.WARNING_MESSAGE);
 	}
-	
+
 	public void doLogin() throws Exception {
 		doSendData ("Call_Login", username, password);
 	}
-	
+
 	public void doLoginOK(StringTokenizer cont) throws Exception {
 		String uname 	= cont.nextToken();
 		Client client = new Client(socket, username);
-		client.start();			
+		client.start();
 		jFrame.setVisible(false);
 	}
 
-	
+
 	public void doLoginKO(StringTokenizer cont) throws Exception {
 		JOptionPane.showMessageDialog(null, "Impossible login!");
 	}
-	
-	
+
+
 	public void doSignup(String email , String username , String password , String r_password) throws Exception {
 		if(password.equals(r_password)) {
 			doSendData ("Call_Signup", email,username, password);
@@ -170,22 +170,22 @@ public class CheckInfor extends Thread {
 			JOptionPane.showMessageDialog(null, "Wrong password!");
 		}
 	}
-	
+
 	public void doSignupOK(StringTokenizer cont) throws Exception {
 		log = new Login();
 		log.setVisible(true);
 		jFrame.setVisible(false);
-		
+
 //		doSendData("Call_Sent", "Call_Update_Client_List");
 		close(socket, dis, dos);
 	}
-	
+
 	public void doSignupKO(StringTokenizer cont) throws Exception {
 		JOptionPane.showMessageDialog(null, "The account name exists!");
-		
+
 		close(socket, dis, dos);
 	}
-	
+
 	public void close(Socket socket, DataInputStream dataInputStream, DataOutputStream dataOutputStream) {
 		try {
 			if (dataInputStream != null) {
